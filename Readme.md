@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Julie Taylor](https://up.htmlacademy.ru/ecmascript/15/user/393173).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Казаков](https://htmlacademy.ru/profile/id343981).
 
 ---
 
