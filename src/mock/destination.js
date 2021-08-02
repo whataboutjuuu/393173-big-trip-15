@@ -37,12 +37,8 @@ const generatePhotos = () => {
 };
 
 
-export const generateDestination = (city) => {
-
-  return {
-    city: city,
-    description: generateDescription(),
-    photos: generatePhotos(),
-  };
-
-};
+export const generateDestination = (city) => ({
+  city: city,
+  description: generateDescription(),
+  photos: generatePhotos(),
+});

@@ -1,4 +1,4 @@
-import { getRandomInteger } from "../utils";
+import { getRandomInteger } from '../utils';
 const availableOffers = [
   {
     type: 'flight',
@@ -87,14 +87,11 @@ const availableOffers = [
 ];
 
 const generateOffersByType = (type) => {
-  const offers = availableOffers.filter(offer => offer.type == type);
+  const offers = availableOffers.filter((offer) => offer.type === type);
   return offers;
-}
-
-export const generateOffers = (type) => {
-  return {
-    type: type,
-    offers: generateOffersByType(type)
-  };
-
 };
+
+export const generateOffers = (type) => ({
+  type: type,
+  offers: generateOffersByType(type),
+});

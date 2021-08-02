@@ -18,20 +18,16 @@ const generateData = () => {
   const dateStart = dayjs().add(futureStartDay, 'day');
   const dateFinish = dayjs().add(futureEndDay, 'day');
 
-
- const dateDifference = dateStart.diff(dateFinish, 'minute');
-
-
+  const dateDifference = dateStart.diff(dateFinish, 'minute');
 
   const date = {
     dateStart: dateStart,
     dateFinish: dateFinish,
     dateDifference: dateDifference,
-  }
-
+  };
 
   return date;
-}
+};
 
 // Generate city
 const generateCity = () => {
@@ -41,8 +37,6 @@ const generateCity = () => {
 
   return cities[randomCityIndex];
 };
-
-
 
 export const generatePoint = () => {
 

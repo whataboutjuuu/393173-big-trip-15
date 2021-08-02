@@ -1,8 +1,6 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
-const formatDate = (date, format) => {
-  return dayjs(date).format(format);
-};
+const formatDate = (date, format) => dayjs(date).format(format);
 
 const getTimeDifference = (diff) => {
   if (diff / 6 <= 1) {
@@ -16,9 +14,26 @@ const getTimeDifference = (diff) => {
   return diff;
 };
 
+const createOffersList = (offers) => {
+  let offersList = '';
+  for (let i = 0; i < offers.length; i++) {
+    if (offers[i].isChecked) {
+      const offer =
+        `<li class="event__offer">
+        <span class="event__offer-title">${offers[i].name}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offers[i].price}</span>
+      </li>
+    `;
+      offersList = offersList + offer;
+    }
+  }
+
+  return offersList;
+};
 
 export const createPointTemplate = (point) => {
-  const { date, price, isFavorite, type, city } = point;
+  const { date, price, isFavorite, type, city, offers } = point;
 
 
   const dateStart = formatDate(date.dateStart, 'MMM D');
@@ -28,7 +43,6 @@ export const createPointTemplate = (point) => {
   const datetimeFinish = formatDate(date.dateFinish, 'YYYY-MM-DDTHH:mm');
 
   const difference = getTimeDifference(-date.dateDifference);
-
 
   return `
   <li class="trip-events__item">
@@ -51,11 +65,7 @@ export const createPointTemplate = (point) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
-        </li>
+        ${createOffersList(offers.offers)}
       </ul>
       <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>

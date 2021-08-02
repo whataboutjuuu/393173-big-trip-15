@@ -1,3 +1,4 @@
+import { getRandomInteger } from './utils.js';
 import { createRouteTemplate } from './view/route.js';
 import { createMenuTemplate } from './view/menu.js';
 import { createFiltersTemplate } from './view/filters.js';
@@ -10,10 +11,10 @@ import { createEmptyTemplate } from './view/emptylist.js';
 
 import { generatePoint } from './mock/point.js';
 
-const EVENTS_COUNT = 8;
+const pointsCount = getRandomInteger(15, 20);
 const isLoading = false;
 
-const points = new Array(EVENTS_COUNT).fill().map(generatePoint);
+const points = new Array(pointsCount).fill().map(generatePoint);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -34,11 +35,11 @@ if (isLoading) {
   siteEventsListElement.classList.add('trip-events__list');
   siteMainElement.insertAdjacentElement('beforeend', siteEventsListElement);
 
-  if (EVENTS_COUNT !== 0) {
+  if (pointsCount !== 0) {
     render(siteHeadingElement, createRouteTemplate(points), 'afterbegin');
     render(siteEventsListElement, createSortingTemplate(), 'beforebegin');
 
-    for (let i = 0; i < EVENTS_COUNT; i++) {
+    for (let i = 0; i < pointsCount; i++) {
       if (i === 0) {
         render(siteEventsListElement, createPointPopupTemplate(points[i]), 'beforeend');
       } else {
