@@ -16,13 +16,13 @@ const getTimeDifference = (diff) => {
 
 const createOffersList = (offers) => {
   let offersList = '';
-  for (let i = 0; i < offers.length; i++) {
-    if (offers[i].isChecked) {
+  for (const offerItem of offers) {
+    if (offerItem.isChecked) {
       const offer =
         `<li class="event__offer">
-        <span class="event__offer-title">${offers[i].name}</span>
+        <span class="event__offer-title">${offerItem.name}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offers[i].price}</span>
+        <span class="event__offer-price">${offerItem.price}</span>
       </li>
     `;
       offersList = offersList + offer;

@@ -36,18 +36,18 @@ const availableOffers = [
     price: 20,
     isChecked: Boolean(getRandomInteger(0, 1)),
   },
-  {
-    type: 'drive',
-    name: 'Rent a car',
-    price: 200,
-    isChecked: Boolean(getRandomInteger(0, 1)),
-  },
-  {
-    type: 'check-in',
-    name: 'Add breakfast',
-    price: 500,
-    isChecked: Boolean(getRandomInteger(0, 1)),
-  },
+  // {
+  //   type: 'drive',
+  //   name: 'Rent a car',
+  //   price: 200,
+  //   isChecked: Boolean(getRandomInteger(0, 1)),
+  // },
+  // {
+  //   type: 'check-in',
+  //   name: 'Add breakfast',
+  //   price: 500,
+  //   isChecked: Boolean(getRandomInteger(0, 1)),
+  // },
   {
     type: 'sightseeing',
     name: 'Book tickets',
@@ -66,12 +66,12 @@ const availableOffers = [
     price: 50,
     isChecked: Boolean(getRandomInteger(0, 1)),
   },
-  {
-    type: 'bus',
-    name: 'Buy tickets',
-    price: 10,
-    isChecked: Boolean(getRandomInteger(0, 1)),
-  },
+  // {
+  //   type: 'bus',
+  //   name: 'Buy tickets',
+  //   price: 10,
+  //   isChecked: Boolean(getRandomInteger(0, 1)),
+  // },
   {
     type: 'train',
     name: 'Add luggage',
@@ -88,7 +88,8 @@ const availableOffers = [
 
 const generateOffersByType = (type) => {
   const offers = availableOffers.filter((offer) => offer.type === type);
-  return offers;
+
+  return offers.length < 1 ? null : offers;
 };
 
 export const generateOffers = (type) => ({

@@ -1,3 +1,5 @@
+import { TYPES, CITIES } from '../constants.js';
+import { generateOffers } from '../mock/offers.js';
 
 const createDestinationTemplate = (destination) => {
   const { description, photos } = destination;
@@ -26,31 +28,76 @@ const createDestinationTemplate = (destination) => {
   `;
 };
 
-const createOffersTemplate = (offers) => {
+
+const createOfferTemplate = (offerData) => (
+  `<div class="event__offer-selector">
+    <input class="event__offer-checkbox visually-hidden" id="${offerData.name}" type="checkbox" name="${offerData.name}"
+    ${offerData.isChecked ? 'checked' : ''}>
+      <label class="event__offer-label" for="${offerData.name}">
+        <span class="event__offer-title">${offerData.name}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offerData.price}</span>
+      </label>
+    </div>
+  `);
+
+const createOffersTemplate = (type) => {
   let offersList = '';
-  for (let i = 0; i < offers.length; i++) {
-    const offer =
-      `<div class="event__offer-selector">
-        <input class="event__offer-checkbox visually-hidden" id="${offers[i].name}" type="checkbox" name="${offers[i].name}"
-        ${offers[i].isChecked ? 'checked' : ''}>
-          <label class="event__offer-label" for="${offers[i].name}">
-            <span class="event__offer-title">${offers[i].name}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offers[i].price}</span>
-          </label>
+  if (generateOffers(type).offers === null) {
+    return '';
+  } else {
+    const offers = generateOffers(type).offers;
+
+    for (let i = 0; i < offers.length; i++) {
+      const offer = createOfferTemplate(offers[i]);
+      offersList = offersList + offer;
+    }
+
+    return `
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+        <div class="event__available-offers">
+          ${offersList}
         </div>
+      </section>
+    `;
+  }
+};
+
+const createCityList = (cities) => {
+  let cityList = '';
+  for (let i = 0; i < cities.length; i++) {
+    const city =
+      `
+      <option value="${cities[i]}"></option>
       `;
-    offersList = offersList + offer;
+    cityList = cityList + city;
   }
 
-  return offersList;
+  return cityList;
+};
+
+const createTypesList = () => {
+  let typesList = '';
+  for (let i = 0; i < TYPES.length; i++) {
+    const type =
+      `
+      <div class="event__type-item">
+        <input id="event-type-${TYPES[i]}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${TYPES[i]}">
+        <label class="event__type-label  event__type-label--${TYPES[i]}" for="event-type-${TYPES[i]}-1">${TYPES[i]}</label>
+      </div>
+      `;
+    typesList = typesList + type;
+  }
+
+  return typesList;
 };
 
 export const createPointPopupTemplate = (point = {}) => {
   const {
     type = null,
-    destination,
-    offers,
+    destination = '',
   } = point;
 
   return `
@@ -67,55 +114,7 @@ export const createPointPopupTemplate = (point = {}) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-              </div>
+              ${createTypesList(TYPES)}
             </fieldset>
           </div>
         </div>
@@ -126,9 +125,7 @@ export const createPointPopupTemplate = (point = {}) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${createCityList(CITIES)}
           </datalist>
         </div>
 
@@ -152,13 +149,7 @@ export const createPointPopupTemplate = (point = {}) => {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-            ${createOffersTemplate(offers.offers)}
-          </div>
-        </section>
+        ${createOffersTemplate(type)}
 
         ${createDestinationTemplate(destination)}
 

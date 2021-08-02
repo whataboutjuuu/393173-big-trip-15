@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
+import { CITIES, TYPES } from '../constants.js';
 import { getRandomInteger } from '../utils.js';
 import { generateDestination } from './destination.js';
 import { generateOffers } from './offers.js';
 // Generate type
 const generateType = () => {
-  const types = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-
+  const types = TYPES;
 
   const randomTypeIndex = getRandomInteger(0, types.length - 1);
 
@@ -31,21 +31,20 @@ const generateData = () => {
 
 // Generate city
 const generateCity = () => {
-  const cities = ['Amsterdam', 'Chamonix', 'Geneva', 'Warszawa', 'Berlin', 'Dresden', 'Madrid ', 'Lisboa'];
+  const randomCityIndex = getRandomInteger(0, CITIES.length - 1);
 
-  const randomCityIndex = getRandomInteger(0, cities.length - 1);
-
-  return cities[randomCityIndex];
+  return CITIES[randomCityIndex];
 };
 
 export const generatePoint = () => {
 
-  const city = generateCity();
+  const city = generateCity(CITIES);
   const type = generateType();
 
   return {
     type: type,
     city: city,
+
     price: getRandomInteger(800, 2000),
     date: generateData(),
     destination: generateDestination(city),
