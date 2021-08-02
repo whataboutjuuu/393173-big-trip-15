@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
 import { generateDestination } from './destination.js';
+import { generateOffers } from './offers.js';
 // Generate type
 const generateType = () => {
   const types = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
 
   const randomTypeIndex = getRandomInteger(0, types.length - 1);
 
@@ -41,55 +43,20 @@ const generateCity = () => {
 };
 
 
-// Offers structure - move to separate file
-const getOffersArray = () => {
-  const isOffers = Boolean(getRandomInteger(0, 1));
-  const offers = [
-    {
-      name: 'Add luggage',
-      price: 30,
-      isChecked: Boolean(getRandomInteger(0, 1)),
-    },
-    {
-      name: 'Switch to comfort class',
-      price: 100,
-      isChecked: Boolean(getRandomInteger(0, 1)),
-    },
-    {
-      name: 'Add meal',
-      price: 15,
-      isChecked: Boolean(getRandomInteger(0, 1)),
-    },
-    {
-      name: 'Choose seats',
-      price: 5,
-      isChecked: Boolean(getRandomInteger(0, 1)),
-    },
-    {
-      name: 'Travel by train',
-      price: 40,
-      isChecked: Boolean(getRandomInteger(0, 1)),
-    },
-  ];
-
-  return isOffers
-    ? offers
-    : null;
-
-};
 
 export const generatePoint = () => {
 
   const city = generateCity();
+  const type = generateType();
 
   return {
-    type: generateType(),
+    type: type,
     city: city,
     price: getRandomInteger(800, 2000),
     date: generateData(),
     destination: generateDestination(city),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: getOffersArray(),
+    offers: generateOffers(type),
   };
 
 };
