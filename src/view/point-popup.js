@@ -1,8 +1,36 @@
-export const createPointPopupTemplate = (point) => {
 
-  const description = point.destination.description;
-  const photos = point.destination.photos;
+const createDestinationTemplate = (destination) => {
+  const { description, photos } = destination;
 
+  const createPhotoList = (photos) => {
+    let photolist = '';
+    for (let i = 0; i < photos.length; i++) {
+      const photo = `<img src='${photos[i]}' alt='Event photo'/>`;
+      photolist = photolist + photo;
+    }
+
+    return photolist;
+  };
+
+  return `
+  <section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${description}</p>
+
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+      ${createPhotoList(photos)}
+      </div >
+    </div>
+  </section>
+  `
+};
+
+export const createPointPopupTemplate = (point = {}) => {
+  const {
+    type = null,
+    destination
+  } = point;
 
   return `
   <li class="trip-events__item">
@@ -11,7 +39,7 @@ export const createPointPopupTemplate = (point) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -155,20 +183,8 @@ export const createPointPopupTemplate = (point) => {
           </div>
         </section>
 
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+        ${createDestinationTemplate(destination)}
 
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              <img class="event__photo" src="${photos[0]}" alt="Event photo">
-              <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
-            </div>
-          </div>
-        </section>
       </section>
     </form>
   </li>

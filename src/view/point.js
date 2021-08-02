@@ -1,24 +1,50 @@
+import dayjs from "dayjs";
+
+const formatDate = (date, format) => {
+  return dayjs(date).format(format);
+};
+
+const getTimeDifference = (diff) => {
+  if (diff / 6 <= 1) {
+    diff = dayjs(diff).format('mm[M]');
+  } else if (diff / 60 > 1 && diff / 60 < 24) {
+    diff = dayjs(diff).format('HH[H] mm[M]');
+  } else {
+    diff = dayjs(diff).format('DD[D] HH[H] mm[M]');
+  }
+
+  return diff;
+};
 
 
 export const createPointTemplate = (point) => {
-  const { dateStart, dateFinish, price, isFavorite, type, city } = point;
+  const { date, price, isFavorite, type, city } = point;
 
-  console.log(point);
+
+  const dateStart = formatDate(date.dateStart, 'MMM D');
+  const timeStart = formatDate(date.dateStart, 'HH:mm');
+  const timeFinish = formatDate(date.dateFinish, 'HH:mm');
+  const datetimeStart = formatDate(date.dateStart, 'YYYY-MM-DDTHH:mm');
+  const datetimeFinish = formatDate(date.dateFinish, 'YYYY-MM-DDTHH:mm');
+
+  const difference = getTimeDifference(-date.dateDifference);
+
+
   return `
   <li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="2019-03-18">MAR 18</time>
+      <time class="event__date" datetime="2019-03-18">${dateStart}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${city}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${dateStart}">10:30</time>
+          <time class="event__start-time" datetime="${datetimeStart}">${timeStart}</time>
           &mdash;
-          <time class="event__end-time" datetime="${dateFinish}">11:00</time>
+          <time class="event__end-time" datetime="${datetimeFinish}">${timeFinish}</time>
         </p>
-        <p class="event__duration">30M</p>
+        <p class="event__duration">${difference}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>

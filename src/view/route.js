@@ -1,5 +1,5 @@
 export const createRouteTemplate = (points) => {
-  console.log(points);
+  // console.log(points);
 // посчитать кол-во уникальных городов в массиве, - Если городов больше 3-х, то в наименовании маршрута отображается первый и последний город, разделённые многоточием: «Amsterdam —... — Chamonix».
 
   return `
