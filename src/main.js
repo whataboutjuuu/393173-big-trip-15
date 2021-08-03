@@ -14,7 +14,8 @@ import { generatePoint } from './mock/point.js';
 const pointsCount = getRandomInteger(15, 20);
 const isLoading = false;
 
-const points = new Array(pointsCount).fill().map(generatePoint);
+//const points = new Array(pointsCount).fill().map(generatePoint);
+const points = generatePoint(pointsCount);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);

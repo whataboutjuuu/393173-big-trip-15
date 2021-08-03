@@ -1,5 +1,5 @@
 import { TYPES, CITIES } from '../constants.js';
-import { generateOffers } from '../mock/offers.js';
+import { generateOffersByType } from '../mock/offers.js';
 
 // Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
@@ -37,10 +37,10 @@ const createDestinationTemplate = (destination) => {
 // Generate template of one offer
 const createOfferTemplate = (offerData) => (
   `<div class="event__offer-selector">
-    <input class="event__offer-checkbox visually-hidden" id="${offerData.name}" type="checkbox" name="${offerData.name}"
+    <input class="event__offer-checkbox visually-hidden" id="${offerData.title}" type="checkbox" name="${offerData.title}"
     ${offerData.isChecked ? 'checked' : ''}>
-      <label class="event__offer-label" for="${offerData.name}">
-        <span class="event__offer-title">${offerData.name}</span>
+      <label class="event__offer-label" for="${offerData.title}">
+        <span class="event__offer-title">${offerData.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offerData.price}</span>
       </label>
@@ -48,27 +48,30 @@ const createOfferTemplate = (offerData) => (
   `);
 // Generate offers list if offers exist
 const createOffersTemplate = (type) => {
-  let offersList = '';
-  if (generateOffers(type).offers === null) {
-    return '';
-  } else {
-    const offers = generateOffers(type).offers;
 
-    for (const oferItem of offers) {
-      const offer = createOfferTemplate(oferItem);
+  let offersList = '';
+
+  const offers = generateOffersByType(type);
+
+  for (const item of offers) {
+
+    for (const offerItem of item.offers) {
+      const offer = createOfferTemplate(offerItem);
+
       offersList = offersList + offer;
     }
-
-    return `
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-        <div class="event__available-offers">
-          ${offersList}
-        </div>
-      </section>
-    `;
   }
+
+  return `
+    <section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        ${offersList}
+      </div>
+    </section>
+  `;
+
 };
 // Generate cities list for input
 const createCityList = (cities) => {
@@ -155,7 +158,7 @@ export const createPointPopupTemplate = (point = {}) => {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        ${createOffersTemplate(type)}
+${createOffersTemplate(type)}
 
         ${createDestinationTemplate(destination)}
 
@@ -165,3 +168,4 @@ export const createPointPopupTemplate = (point = {}) => {
   `;
 
 };
+//${createOffersTemplate(type)}
