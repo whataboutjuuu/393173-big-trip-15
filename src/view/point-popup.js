@@ -1,34 +1,40 @@
 import { TYPES, CITIES } from '../constants.js';
 import { generateOffers } from '../mock/offers.js';
 
+// Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
   const { description, photos } = destination;
 
   const createPhotoList = () => {
     let photolist = '';
-    for (let i = 0; i < photos.length; i++) {
-      const photo = `<img src='${photos[i]}' alt='Event photo'/>`;
-      photolist = photolist + photo;
+    if (photos !== null) {
+      for (let photocard of photos) {
+        const photo = `<img src='${photocard}' class='event__photo' alt='Event photo'/>`;
+        photolist = photolist + photo;
+      }
     }
 
     return photolist;
   };
 
-  return `
-  <section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${description}</p>
+  const conditiontoDisplay = description !== '' && createPhotoList() !== '';
 
-    <div class="event__photos-container">
-      <div class="event__photos-tape">
-      ${createPhotoList(photos)}
-      </div >
-    </div>
-  </section>
-  `;
+  return conditiontoDisplay
+    ? `
+    <section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${description}</p>
+
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+        ${createPhotoList(photos)}
+        </div >
+      </div>
+    </section>
+    `
+    :  ``;
 };
-
-
+// Generate template of one offer
 const createOfferTemplate = (offerData) => (
   `<div class="event__offer-selector">
     <input class="event__offer-checkbox visually-hidden" id="${offerData.name}" type="checkbox" name="${offerData.name}"
@@ -40,7 +46,7 @@ const createOfferTemplate = (offerData) => (
       </label>
     </div>
   `);
-
+// Generate offers list if offers exist
 const createOffersTemplate = (type) => {
   let offersList = '';
   if (generateOffers(type).offers === null) {
@@ -48,8 +54,8 @@ const createOffersTemplate = (type) => {
   } else {
     const offers = generateOffers(type).offers;
 
-    for (let i = 0; i < offers.length; i++) {
-      const offer = createOfferTemplate(offers[i]);
+    for (let oferItem of offers) {
+      const offer = createOfferTemplate(oferItem);
       offersList = offersList + offer;
     }
 
@@ -64,31 +70,31 @@ const createOffersTemplate = (type) => {
     `;
   }
 };
-
+// Generate cities list for input
 const createCityList = (cities) => {
   let cityList = '';
-  for (let i = 0; i < cities.length; i++) {
-    const city =
+  for (let city of cities) {
+    const cityOption =
       `
-      <option value="${cities[i]}"></option>
+      <option value="${city}"></option>
       `;
-    cityList = cityList + city;
+    cityList = cityList + cityOption;
   }
 
   return cityList;
 };
-
+// Generate list of types for selector
 const createTypesList = () => {
   let typesList = '';
-  for (let i = 0; i < TYPES.length; i++) {
-    const type =
+  for (let type of TYPES) {
+    const typeItem =
       `
       <div class="event__type-item">
-        <input id="event-type-${TYPES[i]}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${TYPES[i]}">
-        <label class="event__type-label  event__type-label--${TYPES[i]}" for="event-type-${TYPES[i]}-1">${TYPES[i]}</label>
+        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+        <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
       </div>
       `;
-    typesList = typesList + type;
+    typesList = typesList + typeItem;
   }
 
   return typesList;
@@ -96,8 +102,8 @@ const createTypesList = () => {
 
 export const createPointPopupTemplate = (point = {}) => {
   const {
-    type = null,
-    destination = '',
+    type = TYPES[5],
+    destination = { description:'', photos: null},
   } = point;
 
   return `

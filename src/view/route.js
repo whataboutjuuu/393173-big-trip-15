@@ -1,8 +1,18 @@
+import dayjs from "dayjs";
+var minMax = require('dayjs/plugin/minMax');
+dayjs.extend(minMax);
+
 export const createRouteTemplate = (points) => {
 
   const cities = points.map((point) => point.city);
   let route = '';
   const uniqueCities = [...new Set(cities)];
+
+  const startDates = points.map((point) => point.date.dateStart);
+  const finishDates = points.map((point) => point.date.dateFinish);
+
+  const startDate = dayjs.min(startDates).format('MMM DD');
+  const finishDate = dayjs.max(finishDates).format('DD');
 
   if (uniqueCities.length > 3) {
     route =
@@ -16,13 +26,12 @@ export const createRouteTemplate = (points) => {
     `;
   }
 
-
   return `
   <section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       ${route}
 
-      <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+      <p class="trip-info__dates">${startDate}&nbsp;&mdash;&nbsp;${finishDate}</p>
     </div>
 
     <p class="trip-info__cost">

@@ -36,7 +36,6 @@ const generatePhotos = () => {
   return photos;
 };
 
-
 export const generateDestination = (city) => ({
   city: city,
   description: generateDescription(),

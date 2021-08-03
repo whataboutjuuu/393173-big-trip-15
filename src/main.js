@@ -39,12 +39,9 @@ if (isLoading) {
     render(siteHeadingElement, createRouteTemplate(points), 'afterbegin');
     render(siteEventsListElement, createSortingTemplate(), 'beforebegin');
 
-    for (let i = 0; i < pointsCount; i++) {
-      if (i === 0) {
-        render(siteEventsListElement, createPointPopupTemplate(points[i]), 'beforeend');
-      } else {
-        render(siteEventsListElement, createPointTemplate(points[i]), 'beforeend');
-      }
+    render(siteEventsListElement, createPointPopupTemplate(points[0]), 'beforeend');
+    for (let i = 1; i < pointsCount; i++) {
+      render(siteEventsListElement, createPointTemplate(points[i]), 'beforeend');
     }
   } else {
     render(siteMainElement, createEmptyTemplate(), 'beforeend');

@@ -2,10 +2,11 @@ import dayjs from 'dayjs';
 
 const formatDate = (date, format) => dayjs(date).format(format);
 
+// Get differencce between start and finish date in defined format
 const getTimeDifference = (diff) => {
-  if (diff / 6 <= 1) {
+  if (diff / 60000 / 60 < 1) {
     diff = dayjs(diff).format('mm[M]');
-  } else if (diff / 60 > 1 && diff / 60 < 24) {
+  } else if (diff / 60000 / 60 >= 1 && diff / 60000 / 60 < 24) {
     diff = dayjs(diff).format('HH[H] mm[M]');
   } else {
     diff = dayjs(diff).format('DD[D] HH[H] mm[M]');
@@ -13,20 +14,25 @@ const getTimeDifference = (diff) => {
 
   return diff;
 };
-
+// Generate list of offers if they checked
 const createOffersList = (offers) => {
   let offersList = '';
-  for (const offerItem of offers) {
-    if (offerItem.isChecked) {
-      const offer =
-        `<li class="event__offer">
+  if (offers !== null) {
+
+    for (const offerItem of offers) {
+      if (offerItem.isChecked) {
+        const offer =
+          `<li class="event__offer">
         <span class="event__offer-title">${offerItem.name}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offerItem.price}</span>
       </li>
     `;
-      offersList = offersList + offer;
+        offersList = offersList + offer;
+      }
     }
+  }else{
+    offersList = '';
   }
 
   return offersList;
@@ -34,7 +40,6 @@ const createOffersList = (offers) => {
 
 export const createPointTemplate = (point) => {
   const { date, price, isFavorite, type, city, offers } = point;
-
 
   const dateStart = formatDate(date.dateStart, 'MMM D');
   const timeStart = formatDate(date.dateStart, 'HH:mm');
