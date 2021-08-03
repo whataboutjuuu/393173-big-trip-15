@@ -1,5 +1,6 @@
-import dayjs from "dayjs";
-var minMax = require('dayjs/plugin/minMax');
+import dayjs from 'dayjs';
+// eslint-disable-next-line no-undef
+const minMax = require('dayjs/plugin/minMax');
 dayjs.extend(minMax);
 
 export const createRouteTemplate = (points) => {

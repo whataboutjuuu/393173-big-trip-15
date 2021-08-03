@@ -8,7 +8,7 @@ const createDestinationTemplate = (destination) => {
   const createPhotoList = () => {
     let photolist = '';
     if (photos !== null) {
-      for (let photocard of photos) {
+      for (const photocard of photos) {
         const photo = `<img src='${photocard}' class='event__photo' alt='Event photo'/>`;
         photolist = photolist + photo;
       }
@@ -32,7 +32,7 @@ const createDestinationTemplate = (destination) => {
       </div>
     </section>
     `
-    :  ``;
+    :  '';
 };
 // Generate template of one offer
 const createOfferTemplate = (offerData) => (
@@ -54,7 +54,7 @@ const createOffersTemplate = (type) => {
   } else {
     const offers = generateOffers(type).offers;
 
-    for (let oferItem of offers) {
+    for (const oferItem of offers) {
       const offer = createOfferTemplate(oferItem);
       offersList = offersList + offer;
     }
@@ -73,7 +73,7 @@ const createOffersTemplate = (type) => {
 // Generate cities list for input
 const createCityList = (cities) => {
   let cityList = '';
-  for (let city of cities) {
+  for (const city of cities) {
     const cityOption =
       `
       <option value="${city}"></option>
@@ -86,7 +86,7 @@ const createCityList = (cities) => {
 // Generate list of types for selector
 const createTypesList = () => {
   let typesList = '';
-  for (let type of TYPES) {
+  for (const type of TYPES) {
     const typeItem =
       `
       <div class="event__type-item">
