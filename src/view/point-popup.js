@@ -35,31 +35,34 @@ const createDestinationTemplate = (destination) => {
     :  '';
 };
 // Generate template of one offer
-const createOfferTemplate = (offerData) => (
-  `<div class="event__offer-selector">
-    <input class="event__offer-checkbox visually-hidden" id="${offerData.title}" type="checkbox" name="${offerData.title}"
-    ${offerData.isChecked ? 'checked' : ''}>
-      <label class="event__offer-label" for="${offerData.title}">
+const createOfferTemplate = (offerData, pointOffers) => {
+  const isChecked = pointOffers.some((pointOffer) => pointOffer.title === offerData.title);
+  const id = `event-offer-${offerData.title.replaceAll(' ', '-')}`;
+
+  return `<div class="event__offer-selector">
+    <input class="event__offer-checkbox visually-hidden" id="${id}" type="checkbox" name="${offerData.title}"
+    ${isChecked ? 'checked' : ''}>
+      <label class="event__offer-label" for="${id}">
         <span class="event__offer-title">${offerData.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offerData.price}</span>
       </label>
     </div>
-  `);
+  `;
+};
+
 // Generate offers list if offers exist
-const createOffersTemplate = (type) => {
-
+const createOffersTemplate = (type, point) => {
   let offersList = '';
-
   const offers = generateOffersByType(type);
 
+  if (offers.length === 0) {
+    return '';
+  }
+
   for (const item of offers) {
-
-    for (const offerItem of item.offers) {
-      const offer = createOfferTemplate(offerItem);
-
-      offersList = offersList + offer;
-    }
+    const offer = createOfferTemplate(item, point.pointOffers);
+    offersList = offersList + offer;
   }
 
   return `
@@ -71,8 +74,8 @@ const createOffersTemplate = (type) => {
       </div>
     </section>
   `;
-
 };
+
 // Generate cities list for input
 const createCityList = (cities) => {
   let cityList = '';
@@ -86,6 +89,7 @@ const createCityList = (cities) => {
 
   return cityList;
 };
+
 // Generate list of types for selector
 const createTypesList = () => {
   let typesList = '';
@@ -158,7 +162,7 @@ export const createPointPopupTemplate = (point = {}) => {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-${createOffersTemplate(type)}
+        ${createOffersTemplate(type, point)}
 
         ${createDestinationTemplate(destination)}
 
@@ -168,4 +172,3 @@ ${createOffersTemplate(type)}
   `;
 
 };
-//${createOffersTemplate(type)}

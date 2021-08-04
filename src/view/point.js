@@ -21,21 +21,17 @@ const getTimeDifference = (dateFrom, dateTo) => {
 
 // Generate list of offers that checked
 const createOffersList = (offersArray) => {
-
   let offersListTemplate = '';
-  for (const offersItem of offersArray) {
-    const offersList = offersItem.offers;
 
-    for (const offersListItem of offersList) {
-      const offer =
-        `<li class="event__offer">
-        <span class="event__offer-title">${offersListItem.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offersListItem.price}</span>
-      </li>
-    `;
-      offersListTemplate = offersListTemplate + offer;
-    }
+  for (const offersItem of offersArray) {
+    const offer =
+      `<li class="event__offer">
+      <span class="event__offer-title">${offersItem.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offersItem.price}</span>
+    </li>
+  `;
+    offersListTemplate = offersListTemplate + offer;
   }
 
   return offersListTemplate;
