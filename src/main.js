@@ -1,3 +1,4 @@
+import { getRandomInteger } from './utils.js';
 import { createRouteTemplate } from './view/route.js';
 import { createMenuTemplate } from './view/menu.js';
 import { createFiltersTemplate } from './view/filters.js';
@@ -8,8 +9,13 @@ import { createSortingTemplate } from './view/sorting.js';
 import { createLoadingTemplate } from './view/loading.js';
 import { createEmptyTemplate } from './view/emptylist.js';
 
-const EVENTS_COUNT = 3;
+import { generatePoint } from './mock/point.js';
+
+const pointsCount = getRandomInteger(15, 20);
 const isLoading = false;
+
+//const points = new Array(pointsCount).fill().map(generatePoint);
+const points = generatePoint(pointsCount);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -30,16 +36,13 @@ if (isLoading) {
   siteEventsListElement.classList.add('trip-events__list');
   siteMainElement.insertAdjacentElement('beforeend', siteEventsListElement);
 
-  if (EVENTS_COUNT !== 0) {
-    render(siteHeadingElement, createRouteTemplate(), 'afterbegin');
+  if (pointsCount !== 0) {
+    render(siteHeadingElement, createRouteTemplate(points), 'afterbegin');
     render(siteEventsListElement, createSortingTemplate(), 'beforebegin');
 
-    for (let i = 0; i < EVENTS_COUNT; i++) {
-      if (i === 0) {
-        render(siteEventsListElement, createPointPopupTemplate(), 'beforeend');
-      } else {
-        render(siteEventsListElement, createPointTemplate(), 'beforeend');
-      }
+    render(siteEventsListElement, createPointPopupTemplate(points[0]), 'beforeend');
+    for (let i = 1; i < pointsCount; i++) {
+      render(siteEventsListElement, createPointTemplate(points[i]), 'beforeend');
     }
   } else {
     render(siteMainElement, createEmptyTemplate(), 'beforeend');
