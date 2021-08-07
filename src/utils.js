@@ -7,7 +7,7 @@ export const getRandomInteger = (a = 0, b = 1) => {
 
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend'
+  BEFOREEND: 'beforeend',
 };
 
 export const render = (container, element, place) => {
@@ -26,4 +26,4 @@ export const createElement = (template) => {
   newElement.innerHTML = template;
 
   return newElement.firstChild;
-}
+};

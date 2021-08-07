@@ -29,11 +29,11 @@ const renderPoint = (pointsContainer, point) => {
 
   const replacePointToForm = () => {
     pointsContainer.replaceChild(pointPopupComponent.getElement(), pointComponent.getElement());
-  }
+  };
 
   const replaceFormToPoint = () => {
     pointsContainer.replaceChild(pointComponent.getElement(), pointPopupComponent.getElement());
-  }
+  };
 
   pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replacePointToForm();
@@ -42,10 +42,10 @@ const renderPoint = (pointsContainer, point) => {
   pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
-  })
+  });
 
   render(pointsContainer, pointComponent.getElement(), RenderPosition.BEFOREEND);
-}
+};
 
 render(siteTabsNavigationElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
 render(siteFiltersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);

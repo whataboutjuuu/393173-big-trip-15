@@ -1,7 +1,7 @@
 import { createElement } from '../utils';
 
 const createEmptyTemplate = () => (
-  `<p class="trip-events__msg">Click New Event to create your first point</p>`
+  '<p class="trip-events__msg">Click New Event to create your first point</p>'
 );
 
 export default class EmptyList{
@@ -25,4 +25,4 @@ export default class EmptyList{
   removeElement() {
     this._element = null;
   }
-};
+}

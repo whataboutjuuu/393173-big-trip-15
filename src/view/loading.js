@@ -1,7 +1,7 @@
 import { createElement } from './../utils';
 
 const createLoadingTemplate = () => (
-  `<p class="trip-events__msg">Loading...</p>`
+  '<p class="trip-events__msg">Loading...</p>'
 );
 
 export default class Loading{
