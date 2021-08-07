@@ -1,6 +1,7 @@
+import { createElement } from '../utils';
 import dayjs from 'dayjs';
 
-export const createRouteTemplate = (points) => {
+const createRouteTemplate = (points) => {
   let startDates = points.map((point) => point.dateFrom);
   let finishDates = points.map((point) => point.dateTo);
   startDates = [...new Set(startDates)];
@@ -24,8 +25,7 @@ export const createRouteTemplate = (points) => {
     `;
   }
 
-  return `
-  <section class="trip-main__trip-info  trip-info">
+  return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       ${route}
 
@@ -38,3 +38,26 @@ export const createRouteTemplate = (points) => {
   </section>
   `;
 };
+
+export default class Route{
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createRouteTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,50 +1,70 @@
 import { getRandomInteger } from './utils.js';
-import { createRouteTemplate } from './view/route.js';
-import { createMenuTemplate } from './view/menu.js';
-import { createFiltersTemplate } from './view/filters.js';
-import { createPointTemplate } from './view/point.js';
-import { createPointPopupTemplate } from './view/point-popup.js';
-import { createSortingTemplate } from './view/sorting.js';
 
-import { createLoadingTemplate } from './view/loading.js';
-import { createEmptyTemplate } from './view/emptylist.js';
+import MenuView from './view/menu.js';
+import EmptyListView from './view/emptylist.js';
+import FiltersView from './view/filters.js';
+import LoadingView from './view/loading.js';
+import SortingView from './view/sorting.js';
+import PointListView from './view/point-list.js';
+import PointView from './view/point.js';
+import PointPopupView from './view/point-popup.js';
+import RouteView from './view/route.js';
 
 import { generatePoint } from './mock/point.js';
+import { render, RenderPosition } from './utils.js';
 
 const pointsCount = getRandomInteger(15, 20);
 const isLoading = false;
-
-//const points = new Array(pointsCount).fill().map(generatePoint);
-const points = generatePoint(pointsCount);
-
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const siteMainElement = document.querySelector('.trip-events');
 const siteHeadingElement = document.querySelector('.trip-main');
 const siteTabsNavigationElement = siteHeadingElement.querySelector('.trip-controls__navigation');
 const siteFiltersElement = siteHeadingElement.querySelector('.trip-controls__filters');
 
-render(siteTabsNavigationElement, createMenuTemplate(), 'beforeend');
-render(siteFiltersElement, createFiltersTemplate(), 'beforeend');
+const points = generatePoint(pointsCount);
+
+const renderPoint = (pointsContainer, point) => {
+  const pointComponent = new PointView(point);
+  const pointPopupComponent = new PointPopupView(point);
+
+  const replacePointToForm = () => {
+    pointsContainer.replaceChild(pointPopupComponent.getElement(), pointComponent.getElement());
+  }
+
+  const replaceFormToPoint = () => {
+    pointsContainer.replaceChild(pointComponent.getElement(), pointPopupComponent.getElement());
+  }
+
+  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replacePointToForm();
+  });
+
+  pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  })
+
+  render(pointsContainer, pointComponent.getElement(), RenderPosition.BEFOREEND);
+}
+
+render(siteTabsNavigationElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
+render(siteFiltersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
 
 if (isLoading) {
-  render(siteMainElement, createLoadingTemplate(), 'beforeend');
+  render(siteMainElement, new LoadingView().getElement(), RenderPosition.BEFOREEND);
 } else {
-  const siteEventsListElement = document.createElement('ul');
-  siteEventsListElement.classList.add('trip-events__list');
-  siteMainElement.insertAdjacentElement('beforeend', siteEventsListElement);
+  const pointListComponent = new PointListView();
+  render(siteMainElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
 
   if (pointsCount !== 0) {
-    render(siteHeadingElement, createRouteTemplate(points), 'afterbegin');
-    render(siteEventsListElement, createSortingTemplate(), 'beforebegin');
+    render(siteHeadingElement, new RouteView(points).getElement(), RenderPosition.AFTERBEGIN);
+    render(siteMainElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+    for (let i = 0; i < pointsCount; i++) {
 
-    render(siteEventsListElement, createPointPopupTemplate(points[0]), 'beforeend');
-    for (let i = 1; i < pointsCount; i++) {
-      render(siteEventsListElement, createPointTemplate(points[i]), 'beforeend');
+      renderPoint(pointListComponent.getElement(), points[i]);
     }
+
   } else {
-    render(siteMainElement, createEmptyTemplate(), 'beforeend');
+    render(siteMainElement, new EmptyListView().getElement(), RenderPosition.BEFOREEND);
   }
 }
