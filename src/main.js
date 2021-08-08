@@ -35,8 +35,22 @@ const renderPoint = (pointsContainer, point) => {
     pointsContainer.replaceChild(pointComponent.getElement(), pointPopupComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     replacePointToForm();
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+
+  pointPopupComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceFormToPoint();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
   pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('submit', (evt) => {
