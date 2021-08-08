@@ -1,3 +1,4 @@
+import { createElement } from '../utils.js';
 import dayjs from 'dayjs';
 
 const formatDate = (date, format) => dayjs(date).format(format);
@@ -37,8 +38,7 @@ const createOffersList = (offersArray) => {
   return offersListTemplate;
 };
 
-export const createPointTemplate = (point) => {
-
+const createPointTemplate = (point) => {
   const { dateFrom, dateTo, basePrice, isFavorite, type, city, pointOffers } = point;
 
   const datetimeStart = formatDate(dateFrom, 'YYYY-MM-DDTHH:mm');
@@ -48,8 +48,7 @@ export const createPointTemplate = (point) => {
   const formattedTimeFrom = formatDate(dateFrom, 'HH:mm');
   const formattedTimeTo = formatDate(dateTo, 'HH:mm');
 
-  return `
-  <li class="trip-events__item">
+  return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${datetimeStart}">${formattedDateFrom}</time>
       <div class="event__type">
@@ -84,3 +83,26 @@ export const createPointTemplate = (point) => {
   </li>
   `;
 };
+
+export default class Point{
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createPointTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

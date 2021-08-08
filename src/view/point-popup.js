@@ -1,5 +1,6 @@
 import { TYPES, CITIES } from '../constants.js';
 import { generateOffersByType } from '../mock/offers.js';
+import { createElement } from '../utils.js';
 
 // Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
@@ -34,6 +35,7 @@ const createDestinationTemplate = (destination) => {
     `
     :  '';
 };
+
 // Generate template of one offer
 const createOfferTemplate = (offerData, pointOffers) => {
   const isChecked = pointOffers.some((pointOffer) => pointOffer.title === offerData.title);
@@ -107,14 +109,13 @@ const createTypesList = () => {
   return typesList;
 };
 
-export const createPointPopupTemplate = (point = {}) => {
+const createPointPopupTemplate = (point = {}) => {
   const {
     type = TYPES[5],
     destination = { description:'', photos: null},
   } = point;
 
-  return `
-  <li class="trip-events__item">
+  return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
@@ -170,5 +171,27 @@ export const createPointPopupTemplate = (point = {}) => {
     </form>
   </li>
   `;
-
 };
+
+export default class PointPopup {
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createPointPopupTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
