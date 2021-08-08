@@ -44,6 +44,11 @@ const renderPoint = (pointsContainer, point) => {
     replaceFormToPoint();
   });
 
+  pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('reset', (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  });
+
   render(pointsContainer, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
