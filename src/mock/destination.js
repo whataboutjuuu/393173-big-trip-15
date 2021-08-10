@@ -1,4 +1,4 @@
-import { getRandomInteger } from '../utils.js';
+import { getRandomInteger } from '../utils/utils.js';
 // Generate description
 const generateDescription = () => {
   const DESCRIPTION_COUNTER_MAX = 5;

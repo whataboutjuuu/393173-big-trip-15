@@ -1,5 +1,5 @@
-import { getRandomInteger } from './utils.js';
-import { render, RenderPosition, replace } from './render.js';
+import { getRandomInteger } from './utils/utils.js';
+import { render, RenderPosition, replace } from './utils/render.js';
 
 import MenuView from './view/menu.js';
 import EmptyListView from './view/emptylist.js';
@@ -43,23 +43,21 @@ const renderPoint = (pointsContainer, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setPopupOpenHandler(() => {
     replacePointToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointPopupComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointPopupComponent.setPopupCloseHandler(() => {
     replaceFormToPoint();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointPopupComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
   });
 
-  pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('reset', (evt) => {
-    evt.preventDefault();
+  pointPopupComponent.setFormResetHandler(() => {
     replaceFormToPoint();
   });
 
@@ -79,7 +77,6 @@ if (isLoading) {
     render(siteHeadingElement, new RouteView(points), RenderPosition.AFTERBEGIN);
     render(siteMainElement, new SortingView(), RenderPosition.AFTERBEGIN);
     for (let i = 0; i < pointsCount; i++) {
-
       renderPoint(pointListComponent, points[i]);
     }
 

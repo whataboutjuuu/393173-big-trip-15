@@ -1,4 +1,4 @@
-import { TYPES, CITIES } from '../constants.js';
+import { TYPES, CITIES } from '../utils/constants.js';
 import { generateOffersByType } from '../mock/offers.js';
 import AbstractView from './abstract.js';
 
@@ -178,9 +178,40 @@ export default class PointPopup extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
   }
 
   getTemplate() {
     return createPointPopupTemplate(this._point);
+  }
+
+  _popupCloseHandler() {
+    this._callback.popupSubmit();
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.formReset();
+  }
+
+  setPopupCloseHandler(callback) {
+    this._callback.popupClose = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._popupCloseHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('.event--edit').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setFormResetHandler(callback) {
+    this._callback.formReset = callback;
+    this.getElement().querySelector('.event--edit').addEventListener('reset', this._formResetHandler);
   }
 }
