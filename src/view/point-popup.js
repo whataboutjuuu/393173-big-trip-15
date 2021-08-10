@@ -1,6 +1,6 @@
 import { TYPES, CITIES } from '../constants.js';
 import { generateOffersByType } from '../mock/offers.js';
-import { createElement } from '../utils.js';
+import AbstractView from './abstract.js';
 
 // Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
@@ -174,25 +174,13 @@ const createPointPopupTemplate = (point = {}) => {
   `;
 };
 
-export default class PointPopup {
+export default class PointPopup extends AbstractView {
   constructor(point) {
-    this._element = null;
+    super();
     this._point = point;
   }
 
   getTemplate() {
     return createPointPopupTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
