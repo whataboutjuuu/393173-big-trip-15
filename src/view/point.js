@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 
 const formatDate = (date, format) => dayjs(date).format(format);
@@ -84,25 +84,24 @@ const createPointTemplate = (point) => {
   `;
 };
 
-export default class Point{
+export default class Point extends AbstractView{
   constructor(point) {
-    this._element = null;
+    super();
     this._point = point;
+    this._popupOpenHandler = this._popupOpenHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _popupOpenHandler(evt) {
+    evt.preventDefault();
+    this._callback.openClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setPopupOpenHandler(callback) {
+    this._callback.openClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._popupOpenHandler);
   }
 }

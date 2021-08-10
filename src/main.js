@@ -1,4 +1,5 @@
-import { getRandomInteger } from './utils.js';
+import { getRandomInteger } from './utils/utils.js';
+import { render, RenderPosition, replace } from './utils/render.js';
 
 import MenuView from './view/menu.js';
 import EmptyListView from './view/emptylist.js';
@@ -11,7 +12,6 @@ import PointPopupView from './view/point-popup.js';
 import RouteView from './view/route.js';
 
 import { generatePoint } from './mock/point.js';
-import { render, RenderPosition } from './utils.js';
 
 const pointsCount = getRandomInteger(15, 20);
 const isLoading = false;
@@ -28,11 +28,11 @@ const renderPoint = (pointsContainer, point) => {
   const pointPopupComponent = new PointPopupView(point);
 
   const replacePointToForm = () => {
-    pointsContainer.replaceChild(pointPopupComponent.getElement(), pointComponent.getElement());
+    replace(pointPopupComponent, pointComponent);
   };
 
   const replaceFormToPoint = () => {
-    pointsContainer.replaceChild(pointComponent.getElement(), pointPopupComponent.getElement());
+    replace(pointComponent, pointPopupComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -43,47 +43,44 @@ const renderPoint = (pointsContainer, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setPopupOpenHandler(() => {
     replacePointToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointPopupComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointPopupComponent.setPopupCloseHandler(() => {
     replaceFormToPoint();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointPopupComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
   });
 
-  pointPopupComponent.getElement().querySelector('.event--edit').addEventListener('reset', (evt) => {
-    evt.preventDefault();
+  pointPopupComponent.setFormResetHandler(() => {
     replaceFormToPoint();
   });
 
-  render(pointsContainer, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointsContainer, pointComponent, RenderPosition.BEFOREEND);
 };
 
-render(siteTabsNavigationElement, new MenuView().getElement(), RenderPosition.BEFOREEND);
-render(siteFiltersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+render(siteTabsNavigationElement, new MenuView(), RenderPosition.BEFOREEND);
+render(siteFiltersElement, new FiltersView(), RenderPosition.BEFOREEND);
 
 if (isLoading) {
-  render(siteMainElement, new LoadingView().getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, new LoadingView(), RenderPosition.BEFOREEND);
 } else {
   const pointListComponent = new PointListView();
-  render(siteMainElement, pointListComponent.getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, pointListComponent, RenderPosition.BEFOREEND);
 
   if (pointsCount !== 0) {
-    render(siteHeadingElement, new RouteView(points).getElement(), RenderPosition.AFTERBEGIN);
-    render(siteMainElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
+    render(siteHeadingElement, new RouteView(points), RenderPosition.AFTERBEGIN);
+    render(siteMainElement, new SortingView(), RenderPosition.AFTERBEGIN);
     for (let i = 0; i < pointsCount; i++) {
-
-      renderPoint(pointListComponent.getElement(), points[i]);
+      renderPoint(pointListComponent, points[i]);
     }
 
   } else {
-    render(siteMainElement, new EmptyListView().getElement(), RenderPosition.BEFOREEND);
+    render(siteMainElement, new EmptyListView(), RenderPosition.BEFOREEND);
   }
 }

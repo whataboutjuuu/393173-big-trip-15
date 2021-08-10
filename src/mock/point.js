@@ -1,5 +1,5 @@
-import { CITIES, TYPES } from '../constants.js';
-import { getRandomInteger } from '../utils.js';
+import { CITIES, TYPES } from '../utils/constants.js';
+import { getRandomInteger } from '../utils/utils.js';
 import { generateDestination } from './destination.js';
 import { generatePointOffers } from './offers.js';
 

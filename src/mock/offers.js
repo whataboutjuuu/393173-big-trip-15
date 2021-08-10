@@ -1,5 +1,5 @@
 import { allOffers } from './allOffers';
-import { getRandomInteger } from '../utils.js';
+import { getRandomInteger } from '../utils/utils.js';
 
 // Generate offers for type of point
 export const generateOffersByType = (type) => {
