@@ -1,6 +1,6 @@
 import PointView from '../view/point.js';
 import PointPopupView from '../view/point-popup.js';
-import { render, replace, RenderPosition } from '../utils/render.js';
+import { render, replace, RenderPosition, remove } from '../utils/render.js';
 
 export default class Point {
   constructor(container) {
@@ -14,6 +14,10 @@ export default class Point {
 
   init(point) {
     this._point = point;
+
+    const prevPointComponent = this._pointComponent;
+    const prevPointPopupComponent = this._pointPopupComponent;
+
     this._pointComponent = new PointView(point);
     this._pointPopupComponent = new PointPopupView(point);
 
@@ -21,7 +25,27 @@ export default class Point {
     this._pointPopupComponent.setPopupCloseHandler(this._handleClosePopup);
     this._pointPopupComponent.setFormSubmitHandler(this._handleClosePopup);
     this._pointPopupComponent.setFormResetHandler(this._handleClosePopup);
-    render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+
+    if (prevPointComponent === null || prevPointPopupComponent === null) {
+      render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this._container.getElement().contains(prevPointComponent.getElement())) {
+      replace(this._pointComponent, prevPointComponent);
+    }
+
+    if (this._container.getElement().contains(prevPointPopupComponent.getElement())) {
+      replace(this._pointPopupComponent, prevPointPopupComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointPopupComponent);
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._pointPopupComponent);
   }
 
   _replacePointToForm(){
