@@ -180,6 +180,7 @@ export default class PointPopup extends AbstractView {
     this._point = point;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
+    this._popupCloseHandler = this._popupCloseHandler.bind(this);
   }
 
   getTemplate() {
@@ -187,7 +188,7 @@ export default class PointPopup extends AbstractView {
   }
 
   _popupCloseHandler() {
-    this._callback.popupSubmit();
+    this._callback.popupClose();
   }
 
   _formSubmitHandler(evt) {
