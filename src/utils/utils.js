@@ -13,4 +13,4 @@ export const updateItem = (items, update) => {
   }
 
   return [...items.slice(0, index), update, ...items.slice(index + 1)];
-}
+};

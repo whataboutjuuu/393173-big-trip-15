@@ -2,10 +2,17 @@ import PointView from '../view/point.js';
 import PointPopupView from '../view/point-popup.js';
 import { render, replace, RenderPosition, remove } from '../utils/render.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  POPUP: 'POPUP',
+};
+
 export default class Point {
-  constructor(container, changeData) {
+  constructor(container, changeData, changeMode) {
     this._container = container;
     this._changeData = changeData;
+    this._changeMode = changeMode;
+    this._mode = Mode.DEFAULT;
     this._pointComponent = null;
     this._pointPopupComponent = null;
     this._handleOpenPopup = this._handleOpenPopup.bind(this);
@@ -34,11 +41,11 @@ export default class Point {
       return;
     }
 
-    if (this._container.getElement().contains(prevPointComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._pointComponent, prevPointComponent);
     }
 
-    if (this._container.getElement().contains(prevPointPopupComponent.getElement())) {
+    if (this._mode === Mode.POPUP) {
       replace(this._pointPopupComponent, prevPointPopupComponent);
     }
 
@@ -51,12 +58,21 @@ export default class Point {
     remove(this._pointPopupComponent);
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
   _replacePointToForm() {
     replace(this._pointPopupComponent, this._pointComponent);
+    this._changeMode();
+    this._mode = Mode.POPUP;
   }
 
   _replaceFormToPoint() {
     replace(this._pointComponent, this._pointPopupComponent);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {
