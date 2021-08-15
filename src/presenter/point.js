@@ -3,13 +3,15 @@ import PointPopupView from '../view/point-popup.js';
 import { render, replace, RenderPosition, remove } from '../utils/render.js';
 
 export default class Point {
-  constructor(container) {
+  constructor(container, changeData) {
     this._container = container;
+    this._changeData = changeData;
     this._pointComponent = null;
     this._pointPopupComponent = null;
     this._handleOpenPopup = this._handleOpenPopup.bind(this);
     this._handleClosePopup = this._handleClosePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(point) {
@@ -25,6 +27,7 @@ export default class Point {
     this._pointPopupComponent.setPopupCloseHandler(this._handleClosePopup);
     this._pointPopupComponent.setFormSubmitHandler(this._handleClosePopup);
     this._pointPopupComponent.setFormResetHandler(this._handleClosePopup);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevPointComponent === null || prevPointPopupComponent === null) {
       render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
@@ -48,7 +51,7 @@ export default class Point {
     remove(this._pointPopupComponent);
   }
 
-  _replacePointToForm(){
+  _replacePointToForm() {
     replace(this._pointPopupComponent, this._pointComponent);
   }
 
@@ -56,7 +59,7 @@ export default class Point {
     replace(this._pointComponent, this._pointPopupComponent);
   }
 
-  _onEscKeyDown(evt){
+  _onEscKeyDown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._replaceFormToPoint();
@@ -69,9 +72,14 @@ export default class Point {
     document.addEventListener('keydown', this._onEscKeyDown);
   }
 
-  _handleClosePopup(){
+  _handleClosePopup() {
     this._replaceFormToPoint();
     document.removeEventListener('keydown', this._onEscKeyDown);
   }
 
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign({}, this._point, { isFavorite: !this._point.isFavorite }),
+    );
+  }
 }

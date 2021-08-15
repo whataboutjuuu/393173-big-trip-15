@@ -5,6 +5,7 @@ import LoadingView from '../view/loading.js';
 import SortingView from '../view/sorting.js';
 import PointListView from '../view/point-list.js';
 import { render, RenderPosition } from '../utils/render.js';
+import {updateItem} from '../utils/utils.js';
 
 const isLoading = false;
 
@@ -13,11 +14,13 @@ export default class Trip {
     this._container = container;
     this._header = header;
     this._points = points.slice();
+    this._pointPresenter = new Map();
     this._routeComponent = new RouteView(this._points);
     this._sortingComponent = new SortingView();
     this._loadingComponent = new LoadingView();
     this._pointListComponent = new PointListView();
     this._emptyListComponent = new EmptyListView();
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init() {
@@ -62,11 +65,18 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointListComponent);
+    const pointPresenter = new PointPresenter(this._pointListComponent, this._handlePointChange);
     pointPresenter.init(point);
+    this._pointPresenter.set(point.id, pointPresenter);
   }
-  _renderUpdatedPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointListComponent);
-    pointPresenter.init(point);
+
+  _clearPointsList() {
+    this._pointPresenter.forEach((presenter) => presenter.destroy());
+    this._pointPresenter.clear();
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._points = updateItem(this._points, updatedPoint);
+    this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 }
