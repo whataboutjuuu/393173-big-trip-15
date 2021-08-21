@@ -1,10 +1,11 @@
 import { TYPES, CITIES } from '../utils/constants.js';
 import { generateOffersByType } from '../mock/offers.js';
-import AbstractView from './abstract.js';
+import { generateDestination } from '../mock/destination.js';
+import SmartView from './smart.js';
 
 // Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
-  const { description, photos } = destination;
+  const {description, photos } = destination;
 
   const createPhotoList = () => {
     let photolist = '';
@@ -54,7 +55,7 @@ const createOfferTemplate = (offerData, pointOffers) => {
 };
 
 // Generate offers list if offers exist
-const createOffersTemplate = (type, point) => {
+const createOffersTemplate = (type, data) => {
   let offersList = '';
   const offers = generateOffersByType(type);
 
@@ -63,7 +64,7 @@ const createOffersTemplate = (type, point) => {
   }
 
   for (const item of offers) {
-    const offer = createOfferTemplate(item, point.pointOffers);
+    const offer = createOfferTemplate(item, data.pointOffers);
     offersList = offersList + offer;
   }
 
@@ -109,21 +110,25 @@ const createTypesList = () => {
   return typesList;
 };
 
-const createPointPopupTemplate = (point = {}) => {
+const createPointPopupTemplate = (data = {}) => {
+
   const {
+    id,
     type = TYPES[5],
-    destination = { description:'', photos: null},
-  } = point;
+    city,
+    destination = { city: city, description: '', photos: null },
+  } = data;
+
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type event__type-btn" for="event-type-toggle-1">
+          <label class="event__type event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -134,29 +139,29 @@ const createPointPopupTemplate = (point = {}) => {
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
+          <label class="event__label  event__type-output" for="event-destination-${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
-          <datalist id="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.city}" list="destination-list-${id}">
+          <datalist id="destination-list-${id}">
             ${createCityList(CITIES)}
           </datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+          <label class="visually-hidden" for="event-start-time-${id}">From</label>
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="19/03/19 00:00">
           &mdash;
-          <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+          <label class="visually-hidden" for="event-end-time-${id}">To</label>
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="19/03/19 00:00">
         </div>
 
         <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-1">
+          <label class="event__label" for="event-price-${id}">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -164,7 +169,7 @@ const createPointPopupTemplate = (point = {}) => {
         <button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
       </header>
       <section class="event__details">
-        ${createOffersTemplate(type, point)}
+        ${createOffersTemplate(type, data)}
 
         ${createDestinationTemplate(destination)}
 
@@ -174,17 +179,27 @@ const createPointPopupTemplate = (point = {}) => {
   `;
 };
 
-export default class PointPopup extends AbstractView {
+export default class PointPopup extends SmartView {
   constructor(point) {
     super();
-    this._point = point;
+    this._data = PointPopup.parsePointToData(point);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._popupCloseHandler = this._popupCloseHandler.bind(this);
+    this._pointTypeHandler = this._pointTypeHandler.bind(this);
+    this._pointCitySelect = this._pointCitySelect.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(point) {
+    this.updateData(
+      PointPopup.parsePointToData(point),
+    );
   }
 
   getTemplate() {
-    return createPointPopupTemplate(this._point);
+    return createPointPopupTemplate(this._data);
   }
 
   _popupCloseHandler() {
@@ -193,7 +208,7 @@ export default class PointPopup extends AbstractView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(PointPopup.parseDataToPoint(this._data));
   }
 
   _formResetHandler(evt) {
@@ -214,5 +229,47 @@ export default class PointPopup extends AbstractView {
   setFormResetHandler(callback) {
     this._callback.formReset = callback;
     this.getElement().querySelector('.event--edit').addEventListener('reset', this._formResetHandler);
+  }
+
+  _pointTypeHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      type: evt.target.value,
+    }, false);
+  }
+
+  _pointCitySelect(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      city: evt.target.value,
+      destination: generateDestination(evt.target.value),
+    }, false);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormResetHandler(this._callback.formReset);
+    this.setPopupCloseHandler(this._callback.popupClose);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._pointTypeHandler);
+    this.getElement().querySelector('.event__field-group--destination').addEventListener('change', this._pointCitySelect);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+
+    return data;
   }
 }
