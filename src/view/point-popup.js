@@ -117,6 +117,7 @@ const createPointPopupTemplate = (data = {}) => {
     type = TYPES[5],
     city,
     destination = { city: city, description: '', photos: null },
+    isCitySelected,
   } = data;
 
 
@@ -170,9 +171,7 @@ const createPointPopupTemplate = (data = {}) => {
       </header>
       <section class="event__details">
         ${createOffersTemplate(type, data)}
-
-        ${createDestinationTemplate(destination)}
-
+        ${isCitySelected ? createDestinationTemplate(destination) : ''}
       </section>
     </form>
   </li>
@@ -245,6 +244,7 @@ export default class PointPopup extends SmartView {
     this.updateData({
       city: evt.target.value,
       destination: generateDestination(evt.target.value),
+      isCitySelected: evt.target.value.length>0,
     }, false);
   }
 
@@ -264,12 +264,13 @@ export default class PointPopup extends SmartView {
     return Object.assign(
       {},
       point,
+      {isCitySelected: point.city !== ''},
     );
   }
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
-
+    delete data.isCitySelected;
     return data;
   }
 }
