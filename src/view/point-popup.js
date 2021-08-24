@@ -2,6 +2,9 @@ import { TYPES, CITIES } from '../utils/constants.js';
 import { generateOffersByType } from '../mock/offers.js';
 import { generateDestination } from '../mock/destination.js';
 import SmartView from './smart.js';
+import flatpickr from 'flatpickr';
+import dayjs from 'dayjs';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
@@ -116,10 +119,14 @@ const createPointPopupTemplate = (data = {}) => {
     id,
     type = TYPES[5],
     city,
+    dateFrom, dateTo,
+    basePrice,
     destination = { city: city, description: '', photos: null },
     isCitySelected,
   } = data;
 
+  const valueDateFrom = dayjs(dateFrom).format('DD/MM/YYYY HH:mm');
+  const valueDateTo = dayjs(dateTo).format('DD/MM/YYYY HH:mm');
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -151,10 +158,10 @@ const createPointPopupTemplate = (data = {}) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-${id}">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${valueDateFrom}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-${id}">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${valueDateTo}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -162,7 +169,7 @@ const createPointPopupTemplate = (data = {}) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -182,13 +189,19 @@ export default class PointPopup extends SmartView {
   constructor(point) {
     super();
     this._data = PointPopup.parsePointToData(point);
+    this._datepickerFrom = null;
+    this._datepickerTo = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._popupCloseHandler = this._popupCloseHandler.bind(this);
     this._pointTypeHandler = this._pointTypeHandler.bind(this);
     this._pointCitySelect = this._pointCitySelect.bind(this);
+    this._pointDateFromChangeHandler = this._pointDateFromChangeHandler.bind(this);
+    this._pointDateToChangeHandler = this._pointDateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepickerFrom();
+    this._setDatepickerTo();
   }
 
   reset(point) {
@@ -248,8 +261,60 @@ export default class PointPopup extends SmartView {
     }, false);
   }
 
+  _setDatepickerFrom() {
+    if (this._datepickerFrom) {
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+    }
+
+    this._datepickerFrom = flatpickr(
+      this.getElement().querySelector('.event__field-group--time input[name="event-start-time"]'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._data.dateFrom,
+        maxDate: this._data.dateTo,
+        onChange:this._pointDateFromChangeHandler,
+      },
+    );
+  }
+
+  _setDatepickerTo() {
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+    }
+
+    this._datepickerTo = flatpickr(
+      this.getElement().querySelector('.event__field-group--time input[name="event-end-time"]'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._data.dateTo,
+        minDate: this._data.dateFrom,
+        onChange: this._pointDateToChangeHandler,
+      },
+    );
+  }
+
+  _pointDateFromChangeHandler([userDate]) {
+    this.updateData({
+      dateFrom: userDate,
+    }, true);
+  }
+
+  _pointDateToChangeHandler([userDate]) {
+    this.updateData({
+      dateTo: userDate,
+    }, true);
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepickerFrom();
+    this._setDatepickerTo();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setPopupCloseHandler(this._callback.popupClose);
