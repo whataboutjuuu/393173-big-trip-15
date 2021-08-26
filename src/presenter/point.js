@@ -1,6 +1,7 @@
 import PointView from '../view/point.js';
 import PointPopupView from '../view/point-popup.js';
 import { render, replace, RenderPosition, remove } from '../utils/render.js';
+import { UserAction, UpdateType } from '../utils/constants.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -19,6 +20,7 @@ export default class Point {
     this._handleClosePopup = this._handleClosePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(point) {
@@ -32,7 +34,7 @@ export default class Point {
 
     this._pointComponent.setPopupOpenHandler(this._handleOpenPopup);
     this._pointPopupComponent.setPopupCloseHandler(this._handleClosePopup);
-    this._pointPopupComponent.setFormSubmitHandler(this._handleClosePopup);
+    this._pointPopupComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointPopupComponent.setFormResetHandler(this._handleClosePopup);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
@@ -94,8 +96,20 @@ export default class Point {
     document.removeEventListener('keydown', this._onEscKeyDown);
   }
 
+  _handleFormSubmit(point) {
+    console.log(point);
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      point,
+    );
+    this._replaceFormToCard();
+  }
+
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign({}, this._point, { isFavorite: !this._point.isFavorite }),
     );
   }
