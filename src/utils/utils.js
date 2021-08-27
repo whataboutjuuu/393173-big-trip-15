@@ -29,4 +29,3 @@ export const sortingByTime = (pointA, pointB) => getDuration(pointB) - getDurati
 export const sortingByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
 export const sortingByDate = (pointA, pointB) => pointA.dateFrom - pointB.dateFrom;
-

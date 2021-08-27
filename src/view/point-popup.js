@@ -192,6 +192,7 @@ export default class PointPopup extends SmartView {
     this._datepickerFrom = null;
     this._datepickerTo = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._formResetHandler = this._formResetHandler.bind(this);
     this._popupCloseHandler = this._popupCloseHandler.bind(this);
     this._pointTypeHandler = this._pointTypeHandler.bind(this);
@@ -208,6 +209,17 @@ export default class PointPopup extends SmartView {
     this.updateData(
       PointPopup.parsePointToData(point),
     );
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepickerTo || this._datepickerFrom) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+    }
   }
 
   getTemplate() {
@@ -242,6 +254,13 @@ export default class PointPopup extends SmartView {
     this._callback.formReset = callback;
     this.getElement().querySelector('.event--edit').addEventListener('reset', this._formResetHandler);
   }
+
+  // TODO: separate Cancel from Delete
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
 
   _pointTypeHandler(evt) {
     evt.preventDefault();
@@ -317,12 +336,18 @@ export default class PointPopup extends SmartView {
     this._setDatepickerTo();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.setPopupCloseHandler(this._callback.popupClose);
   }
 
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._pointTypeHandler);
     this.getElement().querySelector('.event__field-group--destination').addEventListener('change', this._pointCitySelect);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointPopup.parseDataToPoint(this._data));
   }
 
   static parsePointToData(point) {
