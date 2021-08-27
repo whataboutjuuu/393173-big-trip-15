@@ -81,6 +81,7 @@ export default class Trip {
     render(this._container, this._pointListComponent, RenderPosition.BEFOREEND);
     this._renderRoute(points);
     this._renderSorting();
+
     this._renderPoints(points);
   }
 
@@ -135,7 +136,7 @@ export default class Trip {
 
     this._currentSortType = sortType;
     this._clearPointsList();
-    this._renderPoints();
+    this._renderPointsList();
   }
 
   _handleViewAction(actionType, updateType, update) {
