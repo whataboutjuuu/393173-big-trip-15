@@ -197,6 +197,8 @@ export default class PointPopup extends SmartView {
     this._popupCloseHandler = this._popupCloseHandler.bind(this);
     this._pointTypeHandler = this._pointTypeHandler.bind(this);
     this._pointCitySelect = this._pointCitySelect.bind(this);
+    this._pointPriceInput = this._pointPriceInput.bind(this);
+    this._pointOffersHandler = this._pointOffersHandler.bind(this);
     this._pointDateFromChangeHandler = this._pointDateFromChangeHandler.bind(this);
     this._pointDateToChangeHandler = this._pointDateToChangeHandler.bind(this);
 
@@ -280,6 +282,21 @@ export default class PointPopup extends SmartView {
     }, false);
   }
 
+  _pointPriceInput(evt) {
+    evt.preventDefault();
+    this.updateData({
+      basePrice: evt.target.value,
+    }, true);
+  }
+
+  _pointOffersHandler(evt) {
+    console.log(evt);
+    evt.preventDefault();
+    this.updateData({
+      offers: evt.target.value,
+    }, false);
+  }
+
   _setDatepickerFrom() {
     if (this._datepickerFrom) {
       this._datepickerFrom.destroy();
@@ -343,6 +360,8 @@ export default class PointPopup extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._pointTypeHandler);
     this.getElement().querySelector('.event__field-group--destination').addEventListener('change', this._pointCitySelect);
+    this.getElement().querySelector('.event__input--price').addEventListener('change', this._pointPriceInput);
+    this.getElement().querySelector('.event__available-offers').addEventListener('change', this._pointOffersHandler);
   }
 
   _formDeleteClickHandler(evt) {
