@@ -101,7 +101,6 @@ export default class Point {
   }
 
   _handleFormSubmit(update) {
-    console.log(update);
     const currentDate = new Date();
     const isMajorUpdate = this._point.city === update.city || this._point.basePrice === update.basePrice;
     const isMinorUpdate = currentDate < update.dateFrom;
@@ -112,7 +111,6 @@ export default class Point {
     } else if(isMinorUpdate){
       updateType = UpdateType.MINOR;
     }
-    console.log(updateType);
 
     this._changeData(
       UserAction.UPDATE_POINT,

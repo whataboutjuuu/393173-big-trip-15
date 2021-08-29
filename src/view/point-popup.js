@@ -41,13 +41,12 @@ const createDestinationTemplate = (destination) => {
 };
 
 // Generate template of one offer
-const createOfferTemplate = (offerData, pointOffers) => {
-  const isChecked = pointOffers.some((pointOffer) => pointOffer.title === offerData.title);
+const createOfferTemplate = (offerData) => {
   const id = `event-offer-${offerData.title.replaceAll(' ', '-')}`;
 
   return `<div class="event__offer-selector">
     <input class="event__offer-checkbox visually-hidden" id="${id}" type="checkbox" name="${offerData.title}"
-    ${isChecked ? 'checked' : ''}>
+    ${offerData.isChecked ? 'checked' : ''}>
       <label class="event__offer-label" for="${id}">
         <span class="event__offer-title">${offerData.title}</span>
         &plus;&euro;&nbsp;
@@ -58,16 +57,11 @@ const createOfferTemplate = (offerData, pointOffers) => {
 };
 
 // Generate offers list if offers exist
-const createOffersTemplate = (type, data) => {
+const createOffersTemplate = (availableOffersList) => {
   let offersList = '';
-  const offers = generateOffersByType(type);
 
-  if (offers.length === 0) {
-    return '';
-  }
-
-  for (const item of offers) {
-    const offer = createOfferTemplate(item, data.pointOffers);
+  for (const item of availableOffersList) {
+    const offer = createOfferTemplate(item);
     offersList = offersList + offer;
   }
 
@@ -122,7 +116,7 @@ const createPointPopupTemplate = (data = {}) => {
     dateFrom, dateTo,
     basePrice,
     destination = { city: city, description: '', photos: null },
-    isCitySelected,
+    isCitySelected, availableOffers, checkedOffers,
   } = data;
 
   const valueDateFrom = dayjs(dateFrom).format('DD/MM/YYYY HH:mm');
@@ -177,7 +171,8 @@ const createPointPopupTemplate = (data = {}) => {
         <button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
       </header>
       <section class="event__details">
-        ${createOffersTemplate(type, data)}
+        ${availableOffers.length > 0 ? createOffersTemplate(availableOffers) : ''}
+
         ${isCitySelected ? createDestinationTemplate(destination) : ''}
       </section>
     </form>
@@ -290,11 +285,22 @@ export default class PointPopup extends SmartView {
   }
 
   _pointOffersHandler(evt) {
-    console.log(evt);
     evt.preventDefault();
+    for (const offer of this._data.availableOffers) {
+      if (offer.title === evt.target.name) {
+        offer.isChecked = !offer.isChecked;
+      }
+    }
+
+    this._data.checkedOffers = this._data.availableOffers.filter((offer) => offer.isChecked);
+
+
     this.updateData({
-      offers: evt.target.value,
-    }, false);
+      pointOffers: Object.assign(
+        {},
+        this._data.checkedOffers,
+      ),
+    }, true);
   }
 
   _setDatepickerFrom() {
@@ -361,7 +367,9 @@ export default class PointPopup extends SmartView {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._pointTypeHandler);
     this.getElement().querySelector('.event__field-group--destination').addEventListener('change', this._pointCitySelect);
     this.getElement().querySelector('.event__input--price').addEventListener('change', this._pointPriceInput);
-    this.getElement().querySelector('.event__available-offers').addEventListener('change', this._pointOffersHandler);
+    if (this._data.availableOffers.length > 0) {
+      this.getElement().querySelector('.event__available-offers').addEventListener('change', this._pointOffersHandler);
+    }
   }
 
   _formDeleteClickHandler(evt) {
@@ -370,16 +378,27 @@ export default class PointPopup extends SmartView {
   }
 
   static parsePointToData(point) {
+    const offers = generateOffersByType(point.type);
+    for (const offer of offers) {
+      offer['isChecked'] = Object.values(point.pointOffers).some((pointOffer) => pointOffer.title === offer.title);
+    }
+
     return Object.assign(
       {},
       point,
-      {isCitySelected: point.city !== ''},
+      { isCitySelected: point.city !== '', checkedOffers: point.pointOffers, availableOffers: offers},
     );
   }
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
+    data.pointOffers = Object.values(data.pointOffers);
+
     delete data.isCitySelected;
+    delete data.checkedOffers;
+    delete data.availableOffers;
+    delete data.pointOffers.isChecked;
+
     return data;
   }
 }
