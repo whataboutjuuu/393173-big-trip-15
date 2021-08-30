@@ -116,7 +116,7 @@ const createPointPopupTemplate = (data = {}) => {
     dateFrom, dateTo,
     basePrice,
     destination = { city: city, description: '', photos: null },
-    isCitySelected, availableOffers, checkedOffers,
+    isCitySelected, availableOffers,
   } = data;
 
   const valueDateFrom = dayjs(dateFrom).format('DD/MM/YYYY HH:mm');
