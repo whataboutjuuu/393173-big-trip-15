@@ -9,12 +9,6 @@ import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 
 const pointsCount = getRandomInteger(15, 20);
-// const filters = [
-//   {
-//     type: 'everything',
-//     name: 'EVERYTHING',
-//   },
-// ];
 
 const siteMainElement = document.querySelector('.trip-events');
 const siteHeadingElement = document.querySelector('.trip-main');
@@ -31,7 +25,7 @@ const tripPresenter = new TripPresenter(siteMainElement, siteHeadingElement, poi
 const filterPresenter = new FilterPresenter(siteFiltersElement, filterModel, pointsModel);
 
 render(siteTabsNavigationElement, new MenuView(), RenderPosition.BEFOREEND);
-//render(siteFiltersElement, new FiltersView(filters, 'everything'), RenderPosition.BEFOREEND);
+
 
 filterPresenter.init();
 tripPresenter.init();

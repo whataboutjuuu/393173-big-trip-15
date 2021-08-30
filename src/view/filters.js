@@ -12,27 +12,15 @@ const createFilterTemplate = (filter, currentFilterType) => {
   );
 };
 
-const createFiltersTemplate = (filterItems, currentFilterType) => {
-
-  let filtersList = '';
-  for (const filterItem of filterItems) {
-    console.log(filterItem);
-    const filter = createFilterTemplate(filterItem, currentFilterType);
-    console.log(filter);
-    filtersList = filtersList + filter;
-  }
-  //const filtersTemplate = filtersItem.map((filter) => createFilterTemplate(filter, currentFilterType)).join('');
-  console.log(filtersList);
-  return `
+const createFiltersTemplate = (filters, currentFilterType) => `
     <form class="trip-filters" action="#" method="get">
 
-      ${filtersList}
+      ${filters.map((filter) => createFilterTemplate(filter, currentFilterType)).join('')}
 
 
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>
   `;
-};
 
 
 export default class Filters extends AbstractView{
@@ -45,9 +33,7 @@ export default class Filters extends AbstractView{
   }
 
   getTemplate() {
-    const a = createFiltersTemplate(this._filters, this._currentFilter);
-    console.log(a);
-    return a;
+    return createFiltersTemplate(this._filters, this._currentFilter);
   }
 
   _filterTypeChangeHandler(evt) {
