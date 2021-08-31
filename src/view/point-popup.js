@@ -5,6 +5,7 @@ import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 // Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
@@ -269,19 +270,27 @@ export default class PointPopup extends SmartView {
 
   _pointCitySelect(evt) {
     evt.preventDefault();
-
-    this.updateData({
-      city: evt.target.value,
-      destination: generateDestination(evt.target.value),
-      isCitySelected: evt.target.value.length>0,
-    }, false);
+    if (CITIES.includes(evt.target.value)) {
+      this.updateData({
+        city: evt.target.value,
+        destination: generateDestination(evt.target.value),
+        isCitySelected: evt.target.value.length > 0,
+      }, false);
+    } else {
+      throw new Error('Unfortunatelly you can not add this city');
+    }
   }
 
   _pointPriceInput(evt) {
     evt.preventDefault();
-    this.updateData({
-      basePrice: evt.target.value,
-    }, true);
+    const reg = /^\d+$/;
+    if ((evt.target.value).match(reg)) {
+      this.updateData({
+        basePrice: evt.target.value,
+      }, true);
+    } else {
+      throw new Error('Sorry, you should enter only numbers');
+    }
   }
 
   _pointOffersHandler(evt) {
@@ -378,6 +387,17 @@ export default class PointPopup extends SmartView {
   }
 
   static parsePointToData(point) {
+
+    if (point === undefined) {
+      point = {
+        type: TYPES[0],
+        city: CITIES[0],
+        dateFrom: new Date(), dateTo: new Date(),
+        basePrice: 0,
+        destination: { city: CITIES[0], description: '', photos: null },
+        pointOffers: [],
+      };
+    }
     const offers = generateOffersByType(point.type);
     for (const offer of offers) {
       offer['isChecked'] = Object.values(point.pointOffers).some((pointOffer) => pointOffer.title === offer.title);

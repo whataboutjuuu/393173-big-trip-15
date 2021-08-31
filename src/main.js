@@ -29,3 +29,8 @@ render(siteTabsNavigationElement, new MenuView(), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 tripPresenter.init();
+
+siteHeadingElement.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});

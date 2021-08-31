@@ -1,5 +1,6 @@
 import RouteView from '../view/route.js';
 import PointPresenter from './point.js';
+import PointNewPresenter from './point-new.js';
 import EmptyListView from '../view/emptylist.js';
 import LoadingView from '../view/loading.js';
 import SortingView from '../view/sorting.js';
@@ -35,17 +36,24 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction);
   }
 
   init() {
     this._renderPage();
   }
 
+  createPoint() {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
+  }
+
   _getPoints() {
     this._filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
     const filtredPoints = filter[this._filterType](points);
-    console.log(filtredPoints);
 
     switch (this._currentSortType) {
       case SortType.PRICE:
@@ -83,7 +91,6 @@ export default class Trip {
     render(this._container, this._emptyListComponent, RenderPosition.BEFOREEND);
   }
 
-
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._pointListComponent, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(point);
@@ -106,6 +113,7 @@ export default class Trip {
   }
 
   _clearPage({ resetSortType = false } = {}) {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
 
@@ -120,14 +128,13 @@ export default class Trip {
   }
 
   _handlePointChange(updatedPoint) {
-
     this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
-
 
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {

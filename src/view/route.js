@@ -9,6 +9,9 @@ const createRouteTemplate = (points) => {
   finishDates = [...new Set(finishDates)];
   finishDates = dayjs(finishDates[finishDates.length - 1]).format('DD');
 
+  let price = points.map((point) => point.basePrice);
+  price = price.reduce((a, b) => a + b);
+
   const cities = points.map((point) => point.city);
   let route = '';
   const uniqueCities = [...new Set(cities)];
@@ -33,7 +36,7 @@ const createRouteTemplate = (points) => {
     </div>
 
     <p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${price}</span>
     </p>
   </section>
   `;

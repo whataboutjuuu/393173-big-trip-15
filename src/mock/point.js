@@ -31,7 +31,7 @@ const point = (date) => {
   return {
     type: type,
     city: city,
-    basePrice: getRandomInteger(800, 2000),
+    basePrice: getRandomInteger(20, 200),
     dateFrom: dateFrom,
     dateTo: dateTo,
     destination: generateDestination(city),
