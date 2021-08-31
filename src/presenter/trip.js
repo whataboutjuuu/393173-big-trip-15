@@ -6,7 +6,7 @@ import SortingView from '../view/sorting.js';
 import PointListView from '../view/point-list.js';
 import { render, RenderPosition, remove } from '../utils/render.js';
 import { sortingByPrice, sortingByTime, sortingByDate } from '../utils/utils.js';
-import { SortType, UpdateType, UserAction } from '../utils/constants.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../utils/constants.js';
 import { filter } from '../utils/filter.js';
 
 export default class Trip {
@@ -17,13 +17,15 @@ export default class Trip {
     this._filterModel = filterModel;
     this._points = this._getPoints();
     this._pointPresenter = new Map();
+    this._filterType = FilterType.EVERYTHING;
     this._currentSortType = SortType.DEFAULT;
     this._sourcePoints = this._getPoints();
     this._routeComponent = new RouteView(this._points);
     this._sortingComponent = null;
     this._loadingComponent = new LoadingView();
     this._pointListComponent = new PointListView();
-    this._emptyListComponent = new EmptyListView();
+    // this._emptyListComponent = new EmptyListView();
+    this._emptyListComponent = null;
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -40,10 +42,10 @@ export default class Trip {
   }
 
   _getPoints() {
-    const filterType = this._filterModel.getFilter();
+    this._filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
-    const filtredPoints = filter[filterType](points);
-
+    const filtredPoints = filter[this._filterType](points);
+    console.log(filtredPoints);
 
     switch (this._currentSortType) {
       case SortType.PRICE:
@@ -77,6 +79,7 @@ export default class Trip {
   }
 
   _renderEmptyList() {
+    this._emptyListComponent = new EmptyListView(this._filterType);
     render(this._container, this._emptyListComponent, RenderPosition.BEFOREEND);
   }
 
@@ -108,6 +111,9 @@ export default class Trip {
 
     remove(this._sortingComponent);
 
+    if (this._emptyListComponent) {
+      remove(this._emptyListComponent);
+    }
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
