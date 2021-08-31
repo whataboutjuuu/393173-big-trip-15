@@ -5,7 +5,6 @@ import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-import he from 'he';
 
 // Generate destination template with description and photos if exist
 const createDestinationTemplate = (destination) => {
