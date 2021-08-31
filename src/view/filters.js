@@ -12,16 +12,12 @@ const createFilterTemplate = (filter, currentFilterType) => {
   );
 };
 
-const createFiltersTemplate = (filters, currentFilterType) => `
-    <form class="trip-filters" action="#" method="get">
-
-      ${filters.map((filter) => createFilterTemplate(filter, currentFilterType)).join('')}
-
-
+const createFiltersTemplate = (filters, currentFilterType) =>
+  `<form class="trip-filters" action="#" method="get">
+    ${filters.map((filter) => createFilterTemplate(filter, currentFilterType)).join('')}
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>
   `;
-
 
 export default class Filters extends AbstractView{
   constructor(filters, currentFilterType) {

@@ -44,6 +44,7 @@ export default class Trip {
     const points = this._pointsModel.getPoints();
     const filtredPoints = filter[filterType](points);
 
+
     switch (this._currentSortType) {
       case SortType.PRICE:
         return filtredPoints.sort(sortingByPrice);

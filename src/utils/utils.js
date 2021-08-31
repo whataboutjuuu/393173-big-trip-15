@@ -18,14 +18,14 @@ export const sortingByPrice = (pointA, pointB) => pointB.basePrice - pointA.base
 
 export const sortingByDate = (pointA, pointB) => pointA.dateFrom - pointB.dateFrom;
 
-export const isFutureDateStart = (point) => {
+export const isFutureDateStart = (pointDate) => {
   const currentDate = new Date();
 
-  return point.dateFrom >= currentDate;
+  return pointDate >= currentDate;
 };
 
-export const isPastDateFinish = (point) => {
+export const isPastDateFinish = (pointDate) => {
   const currentDate = new Date();
 
-  return point.dateTo <= currentDate;
+  return pointDate <= currentDate;
 };
