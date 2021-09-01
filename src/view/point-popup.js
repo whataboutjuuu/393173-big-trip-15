@@ -116,7 +116,7 @@ const createPointPopupTemplate = (data = {}) => {
     dateFrom, dateTo,
     basePrice,
     destination = { city: city, description: '', photos: null },
-    isCitySelected, availableOffers,
+    isCitySelected, availableOffers, isNewPoint,
   } = data;
 
   const valueDateFrom = dayjs(dateFrom).format('DD/MM/YYYY HH:mm');
@@ -163,12 +163,12 @@ const createPointPopupTemplate = (data = {}) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
+        <button class="event__reset-btn" type="reset">${isNewPoint ? 'Cancel' : 'Delete'}</button>
+        ${!isNewPoint ? '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button >' : ''}
       </header>
       <section class="event__details">
         ${availableOffers.length > 0 ? createOffersTemplate(availableOffers) : ''}
@@ -368,7 +368,9 @@ export default class PointPopup extends SmartView {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormResetHandler(this._callback.formReset);
     this.setDeleteClickHandler(this._callback.deleteClick);
-    this.setPopupCloseHandler(this._callback.popupClose);
+    if (!this._data.isNewPoint) {
+      this.setPopupCloseHandler(this._callback.popupClose);
+    }
   }
 
   _setInnerHandlers() {
@@ -395,6 +397,7 @@ export default class PointPopup extends SmartView {
         basePrice: 0,
         destination: { city: CITIES[0], description: '', photos: null },
         pointOffers: [],
+        isNewPoint: true,
       };
     }
     const offers = generateOffersByType(point.type);
@@ -402,11 +405,13 @@ export default class PointPopup extends SmartView {
       offer['isChecked'] = Object.values(point.pointOffers).some((pointOffer) => pointOffer.title === offer.title);
     }
 
-    return Object.assign(
+    const data = Object.assign(
       {},
       point,
-      { isCitySelected: point.city !== '', checkedOffers: point.pointOffers, availableOffers: offers},
+      { isCitySelected: point.city !== '', checkedOffers: point.pointOffers, availableOffers: offers },
     );
+
+    return data;
   }
 
   static parseDataToPoint(data) {
@@ -416,8 +421,8 @@ export default class PointPopup extends SmartView {
     delete data.isCitySelected;
     delete data.checkedOffers;
     delete data.availableOffers;
+    delete data.isNewPoint;
     delete data.pointOffers.isChecked;
-
     return data;
   }
 }
