@@ -21,7 +21,9 @@ export default class SiteMenu extends AbstractView {
 
   _menuClickHandler(evt) {
     evt.preventDefault();
-    this._callback.menuClick(evt.target.innerText);
+    const activeMenu = evt.target.dataset.value;
+    this.setMenuItem(activeMenu);
+    this._callback.menuClick(evt.target.dataset.value);
   }
 
   setMenuClickHandler(callback) {
@@ -30,10 +32,11 @@ export default class SiteMenu extends AbstractView {
   }
 
   setMenuItem(menuItem) {
-    const item = this.getElement().querySelector(`[data-value=${menuItem}]`);
+    const menuItems = this.getElement().querySelectorAll('.trip-tabs__btn');
+    menuItems.forEach((element) => element.classList.remove('trip-tabs__btn--active'));
 
-    if (item !== null) {
-      item.classList.add('trip-tabs__btn--active');
+    if (menuItem !== null) {
+      this.getElement().querySelector(`[data-value=${menuItem}]`).classList.add('trip-tabs__btn--active');
     }
   }
 }

@@ -1,7 +1,7 @@
 import { getRandomInteger } from './utils/utils.js';
 import { render, RenderPosition, remove } from './utils/render.js';
 import MenuView from './view/menu.js';
-import { MenuItem, UpdateType, FilterType } from './utils/constants.js';
+import { MenuItem } from './utils/constants.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import { generatePoint } from './mock/point.js';
@@ -21,6 +21,7 @@ const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
 const siteMenuComponent = new MenuView();
 const filterModel = new FilterModel();
+const addButtonComponent = siteHeadingElement.querySelector('.trip-main__event-add-btn');
 
 const tripPresenter = new TripPresenter(siteMainElement, siteHeadingElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFiltersElement, filterModel, pointsModel);
@@ -28,30 +29,32 @@ const filterPresenter = new FilterPresenter(siteFiltersElement, filterModel, poi
 render(siteTabsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
 const handleNewPointFormClose = () => {
-  siteHeadingElement.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).disabled = false;
+  addButtonComponent.disabled = false;
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
 };
+
+
+addButtonComponent.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint(handleNewPointFormClose);
+  addButtonComponent.disabled = true;
+});
 
 let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
-    case MenuItem.ADD_POINT:
-      remove(statisticsComponent);
-      tripPresenter.destroy();
-      filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-      tripPresenter.itin();
-      tripPresenter.createPoint(handleNewPointFormClose);
-      siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).disabled = true;
-      break;
     case MenuItem.TABLE:
+      tripPresenter.destroy();
       tripPresenter.init();
       remove(statisticsComponent);
+      addButtonComponent.disabled = false;
       break;
     case MenuItem.STATS:
       tripPresenter.destroy();
       statisticsComponent = new StatsisticsView(pointsModel.getPoints());
       render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
+      addButtonComponent.disabled = true;
       break;
   }
 };

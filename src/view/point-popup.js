@@ -283,7 +283,7 @@ export default class PointPopup extends SmartView {
   _pointPriceInput(evt) {
     evt.preventDefault();
     this.updateData({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     }, true);
   }
 
@@ -410,6 +410,7 @@ export default class PointPopup extends SmartView {
   }
 
   static parseDataToPoint(data) {
+    console.log(data);
     data = Object.assign({}, data);
     data.pointOffers = Object.values(data.pointOffers);
 
