@@ -6,13 +6,25 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const getDuration = (point) => {
-  const from = dayjs(point.dateFrom);
-  const to = dayjs(point.dateTo);
+export const getDuration = (dateFrom, dateTo) => {
+  const from = dayjs(dateFrom);
+  const to = dayjs(dateTo);
   return to.diff(from);
 };
 
-export const sortingByTime = (pointA, pointB) => getDuration(pointB) - getDuration(pointA);
+export const getFormattedTimeDifference = (diff) => {
+  if (diff / 60000 / 60 < 1) {
+    diff = dayjs(diff).format('mm[M]');
+  } else if (diff / 60000 / 60 >= 1 && diff / 60000 / 60 < 24) {
+    diff = dayjs(diff).format('HH[H] mm[M]');
+  } else {
+    diff = dayjs(diff).format('DD[D] HH[H] mm[M]');
+  }
+
+  return diff;
+};
+
+export const sortingByTime = (pointA, pointB) => getDuration(pointB.dateFrom, pointB.dateTo) - getDuration(pointA.dateFrom, pointA.dateTo);
 
 export const sortingByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
