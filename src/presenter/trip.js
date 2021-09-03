@@ -25,7 +25,6 @@ export default class Trip {
     this._sortingComponent = null;
     this._loadingComponent = new LoadingView();
     this._pointListComponent = new PointListView();
-    // this._emptyListComponent = new EmptyListView();
     this._emptyListComponent = null;
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -48,12 +47,9 @@ export default class Trip {
     this._clearPage({ resetSortType: true });
 
     remove(this._pointListComponent);
-   // remove(this._)
   }
 
   createPoint(callback) {
-    // this._currentSortType = SortType.DEFAULT;
-    // this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init(callback);
   }
 
