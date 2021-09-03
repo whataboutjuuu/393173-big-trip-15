@@ -410,7 +410,6 @@ export default class PointPopup extends SmartView {
   }
 
   static parseDataToPoint(data) {
-    console.log(data);
     data = Object.assign({}, data);
     data.pointOffers = Object.values(data.pointOffers);
 
