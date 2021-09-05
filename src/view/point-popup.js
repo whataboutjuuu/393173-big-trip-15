@@ -1,20 +1,19 @@
-import { TYPES, CITIES } from '../utils/constants.js';
-import { generateOffersByType } from '../mock/offers.js';
-import { generateDestination } from '../mock/destination.js';
+import { TYPES } from '../utils/constants.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // Generate destination template with description and photos if exist
-const createDestinationTemplate = (destination) => {
-  const {description, photos } = destination;
+const createDestinationTemplate = (destinationsData, city) => {
+  const destination = destinationsData.filter((item) => item.name === city);
+  const { description, pictures } = destination[0];
 
   const createPhotoList = () => {
     let photolist = '';
-    if (photos !== null) {
-      for (const photocard of photos) {
-        const photo = `<img src='${photocard}' class='event__photo' alt='Event photo'/>`;
+    if (pictures !== null) {
+      for (const photocard of pictures) {
+        const photo = `<img src='${photocard.src}' class='event__photo' alt='${photocard.description}'/>`;
         photolist = photolist + photo;
       }
     }
@@ -32,7 +31,7 @@ const createDestinationTemplate = (destination) => {
 
       <div class="event__photos-container">
         <div class="event__photos-tape">
-        ${createPhotoList(photos)}
+        ${createPhotoList(pictures)}
         </div >
       </div>
     </section>
@@ -57,10 +56,10 @@ const createOfferTemplate = (offerData) => {
 };
 
 // Generate offers list if offers exist
-const createOffersTemplate = (availableOffersList) => {
+const createOffersTemplate = (offers) => {
   let offersList = '';
 
-  for (const item of availableOffersList) {
+  for (const item of offers) {
     const offer = createOfferTemplate(item);
     offersList = offersList + offer;
   }
@@ -107,20 +106,20 @@ const createTypesList = () => {
   return typesList;
 };
 
-const createPointPopupTemplate = (data = {}) => {
-
+const createPointPopupTemplate = (data = {}, destinationsData) => {
   const {
     id,
     type = TYPES[5],
     city,
     dateFrom, dateTo,
     basePrice,
-    destination = { city: city, description: '', photos: null },
-    isCitySelected, availableOffers, isNewPoint,
+    isCitySelected, isNewPoint, availableOffers,
   } = data;
+  const destinations = destinationsData;
 
   const valueDateFrom = dayjs(dateFrom).format('DD/MM/YYYY HH:mm');
   const valueDateTo = dayjs(dateTo).format('DD/MM/YYYY HH:mm');
+  const citiesList = destinations.map((item) => item.name);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -144,9 +143,9 @@ const createPointPopupTemplate = (data = {}) => {
           <label class="event__label  event__type-output" for="event-destination-${id}">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.city}" list="destination-list-${id}">
+          <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
           <datalist id="destination-list-${id}">
-            ${createCityList(CITIES)}
+            ${createCityList(citiesList)}
           </datalist>
         </div>
 
@@ -173,7 +172,7 @@ const createPointPopupTemplate = (data = {}) => {
       <section class="event__details">
         ${availableOffers.length > 0 ? createOffersTemplate(availableOffers) : ''}
 
-        ${isCitySelected ? createDestinationTemplate(destination) : ''}
+        ${isCitySelected ? createDestinationTemplate(destinations, city) : ''}
       </section>
     </form>
   </li>
@@ -181,9 +180,11 @@ const createPointPopupTemplate = (data = {}) => {
 };
 
 export default class PointPopup extends SmartView {
-  constructor(point) {
+  constructor(point, offersModel, destinationModel) {
     super();
-    this._data = PointPopup.parsePointToData(point);
+    this._offersModel = offersModel.getOffers();
+    this._destinationsModel = destinationModel.getDestinations();
+    this._data = PointPopup.parsePointToData(point, this._offersModel);
     this._datepickerFrom = null;
     this._datepickerTo = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -204,7 +205,7 @@ export default class PointPopup extends SmartView {
 
   reset(point) {
     this.updateData(
-      PointPopup.parsePointToData(point),
+      PointPopup.parsePointToData(point, this._offersModel),
     );
   }
 
@@ -220,7 +221,7 @@ export default class PointPopup extends SmartView {
   }
 
   getTemplate() {
-    return createPointPopupTemplate(this._data);
+    return createPointPopupTemplate(this._data, this._destinationsModel);
   }
 
   _popupCloseHandler() {
@@ -252,12 +253,10 @@ export default class PointPopup extends SmartView {
     this.getElement().querySelector('.event--edit').addEventListener('reset', this._formResetHandler);
   }
 
-  // TODO: separate Cancel from Delete
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
-
 
   _pointTypeHandler(evt) {
     evt.preventDefault();
@@ -269,11 +268,13 @@ export default class PointPopup extends SmartView {
 
   _pointCitySelect(evt) {
     evt.preventDefault();
-    if (CITIES.includes(evt.target.value)) {
+    const cityValue = evt.target.value;
+    const cityList = this._destinationsModel.map((city) => city.name);
+    if (cityList.includes(cityValue)) {
       this.updateData({
-        city: evt.target.value,
-        destination: generateDestination(evt.target.value),
-        isCitySelected: evt.target.value.length > 0,
+        city: cityValue,
+        destination: this._destinationsModel.find((city) => city.name === cityValue),
+        isCitySelected: cityValue.length > 0,
       }, false);
     } else {
       throw new Error('Unfortunatelly you can not add this city');
@@ -372,6 +373,7 @@ export default class PointPopup extends SmartView {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._pointTypeHandler);
     this.getElement().querySelector('.event__field-group--destination').addEventListener('change', this._pointCitySelect);
     this.getElement().querySelector('.event__input--price').addEventListener('change', this._pointPriceInput);
+
     if (this._data.availableOffers.length > 0) {
       this.getElement().querySelector('.event__available-offers').addEventListener('change', this._pointOffersHandler);
     }
@@ -382,20 +384,20 @@ export default class PointPopup extends SmartView {
     this._callback.deleteClick(PointPopup.parseDataToPoint(this._data));
   }
 
-  static parsePointToData(point) {
-
+  static parsePointToData(point, offersModel) {
     if (point === undefined) {
       point = {
         type: TYPES[0],
-        city: CITIES[0],
+        city: this._destinationsModel.map((city) => city.name)[0],
         dateFrom: new Date(), dateTo: new Date(),
         basePrice: 0,
-        destination: { city: CITIES[0], description: '', photos: null },
+        destination: { city: this._destinationsModel.map((city) => city.name)[0], description: '', photos: null },
         pointOffers: [],
         isNewPoint: true,
       };
     }
-    const offers = generateOffersByType(point.type);
+
+    const offers = offersModel.filter((item) => item.type === point.type)[0].offers;
     for (const offer of offers) {
       offer['isChecked'] = Object.values(point.pointOffers).some((pointOffer) => pointOffer.title === offer.title);
     }
@@ -411,13 +413,14 @@ export default class PointPopup extends SmartView {
 
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
-    data.pointOffers = Object.values(data.pointOffers);
+    data.pointOffers = Object.values(data.checkedOffers);
 
     delete data.isCitySelected;
     delete data.checkedOffers;
     delete data.availableOffers;
     delete data.isNewPoint;
     delete data.pointOffers.isChecked;
+
     return data;
   }
 }

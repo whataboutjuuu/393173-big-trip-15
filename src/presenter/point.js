@@ -10,10 +10,12 @@ const Mode = {
 };
 
 export default class Point {
-  constructor(container, changeData, changeMode) {
+  constructor(container, changeData, changeMode, offersModel, destinationsModel) {
     this._container = container;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._mode = Mode.DEFAULT;
     this._pointComponent = null;
     this._pointPopupComponent = null;
@@ -31,9 +33,8 @@ export default class Point {
 
     const prevPointComponent = this._pointComponent;
     const prevPointPopupComponent = this._pointPopupComponent;
-
-    this._pointComponent = new PointView(point);
-    this._pointPopupComponent = new PointPopupView(point);
+    this._pointComponent = new PointView(this._point);
+    this._pointPopupComponent = new PointPopupView(this._point, this._offersModel, this._destinationsModel);
 
     this._pointComponent.setPopupOpenHandler(this._handleOpenPopup);
     this._pointPopupComponent.setPopupCloseHandler(this._handleClosePopup);
