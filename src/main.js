@@ -28,6 +28,9 @@ const filterPresenter = new FilterPresenter(siteFiltersElement, filterModel, poi
 
 render(siteTabsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
+filterPresenter.init();
+tripPresenter.init();
+
 const handleNewPointFormClose = () => {
   addButtonComponent.disabled = false;
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
@@ -49,17 +52,17 @@ const handleSiteMenuClick = (menuItem) => {
       tripPresenter.init();
       remove(statisticsComponent);
       addButtonComponent.disabled = false;
+      siteFiltersElement.style.pointerEvents = 'all';
       break;
     case MenuItem.STATS:
       tripPresenter.destroy();
       statisticsComponent = new StatsisticsView(pointsModel.getPoints());
       render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
       addButtonComponent.disabled = true;
+      siteFiltersElement.style.pointerEvents= 'none';
       break;
   }
 };
 
 siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
-filterPresenter.init();
-tripPresenter.init();
