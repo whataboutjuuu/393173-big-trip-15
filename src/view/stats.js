@@ -6,7 +6,8 @@ import { getTypesList, sumMoneyByType, getTypesQuantity, getDurationByType } fro
 import { getFormattedTimeDifference } from '../utils/utils.js';
 
 const renderMoneyChart = (chartCtx, points) => {
-  const labels = getTypesList(points);
+  let labels = getTypesList(points);
+  labels = labels.map((label) => label.charAt(0).toUpperCase() + label.slice(1));
   const prices = sumMoneyByType(points);
 
   return new Chart(chartCtx, {
@@ -76,7 +77,8 @@ const renderMoneyChart = (chartCtx, points) => {
 };
 
 const renderTypeChart = (chartCtx, points) => {
-  const labels = getTypesList(points);
+  let labels = getTypesList(points);
+  labels = labels.map((label) => label.charAt(0).toUpperCase() + label.slice(1));
   const typesQuanity = getTypesQuantity(points);
 
   return new Chart(chartCtx, {
@@ -146,7 +148,8 @@ const renderTypeChart = (chartCtx, points) => {
 };
 
 const renderTimeChart = (chartCtx, points) => {
-  const labels = getTypesList(points);
+  let labels = getTypesList(points);
+  labels = labels.map((label) => label.charAt(0).toUpperCase() + label.slice(1));
   const durations = getDurationByType(points);
 
   return new Chart(chartCtx, {
