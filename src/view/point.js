@@ -1,24 +1,8 @@
 import AbstractView from './abstract.js';
+import { getDuration, getFormattedTimeDifference } from '../utils/utils.js';
 import dayjs from 'dayjs';
 
 const formatDate = (date, format) => dayjs(date).format(format);
-
-// Get difference between start and finish date in defined format
-const getTimeDifference = (dateFrom, dateTo) => {
-  dateFrom = dayjs(dateFrom);
-  dateTo = dayjs(dateTo);
-  let diff = dateTo.diff(dateFrom);
-
-  if (diff / 60000 / 60 < 1) {
-    diff = dayjs(diff).format('mm[M]');
-  } else if (diff / 60000 / 60 >= 1 && diff / 60000 / 60 < 24) {
-    diff = dayjs(diff).format('HH[H] mm[M]');
-  } else {
-    diff = dayjs(diff).format('DD[D] HH[H] mm[M]');
-  }
-
-  return diff;
-};
 
 // Generate list of offers that checked
 const createOffersList = (offersArray) => {
@@ -43,7 +27,8 @@ const createPointTemplate = (point) => {
 
   const datetimeStart = formatDate(dateFrom, 'YYYY-MM-DDTHH:mm');
   const datetimeFinish = formatDate(dateTo, 'YYYY-MM-DDTHH:mm');
-  const difference = getTimeDifference(dateFrom, dateTo);
+  const duration = getDuration(dateFrom, dateTo);
+  const difference = getFormattedTimeDifference(duration);
   const formattedDateFrom = formatDate(dateFrom, 'MMM D');
   const formattedTimeFrom = formatDate(dateFrom, 'HH:mm');
   const formattedTimeTo = formatDate(dateTo, 'HH:mm');

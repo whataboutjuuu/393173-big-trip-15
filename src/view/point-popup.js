@@ -282,14 +282,9 @@ export default class PointPopup extends SmartView {
 
   _pointPriceInput(evt) {
     evt.preventDefault();
-    const reg = /^\d+$/;
-    if ((evt.target.value).match(reg)) {
-      this.updateData({
-        basePrice: evt.target.value,
-      }, true);
-    } else {
-      throw new Error('Sorry, you should enter only numbers');
-    }
+    this.updateData({
+      basePrice: Number(evt.target.value),
+    }, true);
   }
 
   _pointOffersHandler(evt) {
