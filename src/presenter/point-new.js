@@ -17,11 +17,9 @@ export default class PointNew {
 
   init(callback) {
     this._destroyCallback = callback;
-
     if (this._pointPopupComponent !== null) {
       return;
     }
-
 
     this._pointPopupComponent = new PointPopup();
     this._pointPopupComponent.setFormSubmitHandler(this._handleFormSubmit);
@@ -51,7 +49,7 @@ export default class PointNew {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign({ id: 100 }, point),
+      Object.assign({}, point),
     );
     this.destroy();
   }

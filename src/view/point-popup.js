@@ -180,10 +180,10 @@ const createPointPopupTemplate = (data = {}, destinationsData) => {
 };
 
 export default class PointPopup extends SmartView {
-  constructor(point, offersModel, destinationModel) {
+  constructor(point, offersModel, destinationsModel) {
     super();
     this._offersModel = offersModel.getOffers();
-    this._destinationsModel = destinationModel.getDestinations();
+    this._destinationsModel = destinationsModel.getDestinations();
     this._data = PointPopup.parsePointToData(point, this._offersModel);
     this._datepickerFrom = null;
     this._datepickerTo = null;
@@ -260,9 +260,9 @@ export default class PointPopup extends SmartView {
 
   _pointTypeHandler(evt) {
     evt.preventDefault();
-
     this.updateData({
       type: evt.target.value,
+      availableOffers: this._offersModel.filter((item) => item.type === this._data.type)[0].offers,
     }, false);
   }
 
@@ -385,6 +385,7 @@ export default class PointPopup extends SmartView {
   }
 
   static parsePointToData(point, offersModel) {
+
     if (point === undefined) {
       point = {
         type: TYPES[0],

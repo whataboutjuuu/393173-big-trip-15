@@ -35,8 +35,16 @@ export default class Trip {
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-
-    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction);
+    this._newPoint = {
+      type: 'taxi',
+      city: 'Chamonix',
+      dateFrom: new Date(), dateTo: new Date(),
+      basePrice: 0,
+      destination: { city: 'Chamonix', description: '', photos: null },
+      pointOffers: [],
+      isNewPoint: true,
+    };
+    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction, this._newPoint, this._offersModel);
   }
 
   init() {
@@ -167,10 +175,14 @@ export default class Trip {
         });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        this._api.addPoint(update).then((response) => {
+          this._pointsModel.addTask(response);
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        this._api.deletePoint(update).then(() => {
+          this._pointsModel.deletePoint(updateType, update);
+        });
         break;
     }
   }
