@@ -184,7 +184,7 @@ export default class PointPopup extends SmartView {
     super();
     this._offersModel = offersModel.getOffers();
     this._destinationsModel = destinationsModel.getDestinations();
-    this._data = PointPopup.parsePointToData(point, this._offersModel);
+    this._data = PointPopup.parsePointToData(point, this._offersModel, this._destinationsModel);
     this._datepickerFrom = null;
     this._datepickerTo = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -384,21 +384,22 @@ export default class PointPopup extends SmartView {
     this._callback.deleteClick(PointPopup.parseDataToPoint(this._data));
   }
 
-  static parsePointToData(point, offersModel) {
+  static parsePointToData(point, offersModel, destinationsModel) {
 
     if (point === undefined) {
       point = {
-        type: TYPES[0],
-        city: this._destinationsModel.map((city) => city.name)[0],
+        type: 'taxi',
+        city: destinationsModel.map((city) => city.name)[0],
         dateFrom: new Date(), dateTo: new Date(),
         basePrice: 0,
-        destination: { city: this._destinationsModel.map((city) => city.name)[0], description: '', photos: null },
+        destination: { city: destinationsModel.map((city) => city.name)[0], description: '', photos: null },
         pointOffers: [],
         isNewPoint: true,
       };
     }
 
-    const offers = offersModel.filter((item) => item.type === point.type)[0].offers;
+    let offers = offersModel.find((item) => item.type === point.type).offers;
+    offers = Object.values(offers);
     for (const offer of offers) {
       offer['isChecked'] = Object.values(point.pointOffers).some((pointOffer) => pointOffer.title === offer.title);
     }

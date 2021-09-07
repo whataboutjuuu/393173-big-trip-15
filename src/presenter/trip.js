@@ -44,7 +44,7 @@ export default class Trip {
       pointOffers: [],
       isNewPoint: true,
     };
-    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction, this._newPoint, this._offersModel);
+    this._pointNewPresenter = new PointNewPresenter(this._pointListComponent, this._handleViewAction, this._newPoint, this._offersModel, this._destinationsModel);
   }
 
   init() {
