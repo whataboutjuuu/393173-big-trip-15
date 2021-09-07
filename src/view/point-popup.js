@@ -393,6 +393,7 @@ export default class PointPopup extends SmartView {
         dateFrom: new Date(), dateTo: new Date(),
         basePrice: 0,
         destination: { city: destinationsModel.map((city) => city.name)[0], description: '', photos: null },
+        isFavorite: false,
         pointOffers: [],
         isNewPoint: true,
       };

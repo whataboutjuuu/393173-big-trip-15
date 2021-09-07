@@ -176,7 +176,7 @@ export default class Trip {
         break;
       case UserAction.ADD_POINT:
         this._api.addPoint(update).then((response) => {
-          this._pointsModel.addTask(response);
+          this._pointsModel.addPoint(response);
         });
         break;
       case UserAction.DELETE_POINT:
