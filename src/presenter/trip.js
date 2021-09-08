@@ -69,7 +69,6 @@ export default class Trip {
     this._filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
     const filtredPoints = filter[this._filterType](points);
-
     switch (this._currentSortType) {
       case SortType.PRICE:
         return filtredPoints.sort(sortingByPrice);
@@ -176,7 +175,7 @@ export default class Trip {
         break;
       case UserAction.ADD_POINT:
         this._api.addPoint(update).then((response) => {
-          this._pointsModel.addPoint(response);
+          this._pointsModel.addPoint(updateType, response);
         });
         break;
       case UserAction.DELETE_POINT:

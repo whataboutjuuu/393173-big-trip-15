@@ -83,7 +83,11 @@ export default class Points extends AbstractObserver {
         'date_to': point.dateTo,
         'is_favorite': point.isFavorite,
         'offers': point.pointOffers,
-        //destination.name: point.city,
+        'destination': {
+          'name': point.city,
+          'description': point.destination.description,
+          'pictures':point.destination.pictures,
+        },
       },
     );
 
