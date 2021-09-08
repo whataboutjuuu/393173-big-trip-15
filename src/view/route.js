@@ -1,16 +1,23 @@
 import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 
-const createRouteTemplate = (points) => {
-  let startDates = points.map((point) => point.dateFrom);
-  let finishDates = points.map((point) => point.dateTo);
-  startDates = [...new Set(startDates)];
-  startDates = dayjs(startDates[0]).format('MMM DD');
-  finishDates = [...new Set(finishDates)];
-  finishDates = dayjs(finishDates[finishDates.length - 1]).format('DD');
 
-  let price = points.map((point) => point.basePrice);
-  price = price.reduce((a, b) => a + b);
+const calculatePrice = (points) => {
+  let basePrices = points.map((point) => point.basePrice);
+  basePrices = basePrices.reduce((a, b) => a + b);
+
+  let offersPrices = points.map((point) => point.pointOffers).flat();
+  offersPrices = offersPrices.map((offer) => offer.price);
+  offersPrices = offersPrices.reduce((a, b) => a + b);
+
+  return basePrices + offersPrices;
+};
+
+const createRouteTemplate = (points) => {
+  let startDates = points[0].dateFrom;
+  let finishDates = points[points.length-1].dateTo;
+  startDates = dayjs(startDates).format('MMM DD');
+  finishDates = dayjs(finishDates).format('DD');
 
   const cities = points.map((point) => point.city);
   let route = '';
@@ -36,7 +43,7 @@ const createRouteTemplate = (points) => {
     </div>
 
     <p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">${price}</span>
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${calculatePrice(points)}</span>
     </p>
   </section>
   `;
