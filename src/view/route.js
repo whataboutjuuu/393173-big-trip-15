@@ -23,17 +23,24 @@ const createRouteTemplate = (points) => {
   let route = '';
   const uniqueCities = [...new Set(cities)];
 
-  if (uniqueCities.length > 3) {
-    route =
-    `
-    <h1 class="trip-info__title">${uniqueCities[0]} &mdash; ... &mdash; ${uniqueCities[uniqueCities.length - 1]}</h1>
-    `;
-  } else{
-    route =
-    `
-    <h1 class="trip-info__title">${uniqueCities[0]} &mdash; ${uniqueCities[1]} &mdash; ${uniqueCities[2]}</h1>
-    `;
+  switch (uniqueCities.length) {
+    case 0:
+      route = '';
+      break;
+    case 1:
+      route = `<h1 class="trip-info__title">${uniqueCities[0]}</h1>`;
+      break;
+    case 2:
+      route = `<h1 class="trip-info__title">${uniqueCities[0]} &mdash; ${uniqueCities[1]}</h1>`;
+      break;
+    case 3:
+      route = `<h1 class="trip-info__title">${uniqueCities[0]} &mdash; ${uniqueCities[1]} &mdash; ${uniqueCities[2]}</h1>`;
+      break;
+    default:
+      route = `<h1 class="trip-info__title">${uniqueCities[0]} &mdash; ... &mdash; ${uniqueCities[uniqueCities.length - 1]}</h1>`;
+      break;
   }
+
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">

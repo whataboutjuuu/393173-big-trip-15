@@ -11,7 +11,7 @@ import FilterModel from './model/filter.js';
 import StatsisticsView from './view/stats.js';
 import Api from './api.js';
 
-const AUTHORIZATION = 'Basic IBS7LduqwnZWuYgRo';
+const AUTHORIZATION = 'Basic IBS7LduqwnZWuYGRo';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 const siteMainElement = document.querySelector('.trip-events');
