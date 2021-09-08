@@ -109,7 +109,7 @@ const createTypesList = () => {
 const createPointPopupTemplate = (data = {}, destinationsData) => {
   const {
     id,
-    type = TYPES[5],
+    type,
     city,
     dateFrom, dateTo,
     basePrice,
@@ -260,9 +260,10 @@ export default class PointPopup extends SmartView {
 
   _pointTypeHandler(evt) {
     evt.preventDefault();
+    const type = evt.target.value;
     this.updateData({
-      type: evt.target.value,
-      availableOffers: this._offersModel.filter((item) => item.type === this._data.type)[0].offers,
+      type: type,
+      availableOffers: this._offersModel.find((item) => item.type === type).offers,
     }, false);
   }
 
