@@ -1,4 +1,3 @@
-export const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'Warszawa', 'Berlin', 'Dresden', 'Madrid ', 'Lisboa'];
 
 export const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
@@ -18,6 +17,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const FilterType = {
@@ -27,7 +27,6 @@ export const FilterType = {
 };
 
 export const MenuItem = {
-  ADD_POINT: 'ADD_POINT',
   TABLE: 'TABLE',
   STATS: 'STATS',
 };
