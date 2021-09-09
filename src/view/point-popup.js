@@ -184,7 +184,7 @@ export default class PointPopup extends SmartView {
     super();
     this._offersModel = offersModel.getOffers();
     this._destinationsModel = destinationsModel.getDestinations();
-    this._data = PointPopup.parsePointToData(point, this._offersModel, this._destinationsModel);
+    this._data = PointPopup.parsePointToData(point, this._offersModel);
     this._datepickerFrom = null;
     this._datepickerTo = null;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -385,15 +385,15 @@ export default class PointPopup extends SmartView {
     this._callback.deleteClick(PointPopup.parseDataToPoint(this._data));
   }
 
-  static parsePointToData(point, offersModel, destinationsModel) {
+  static parsePointToData(point, offersModel) {
 
     if (point === undefined) {
       point = {
         type: 'taxi',
-        city: destinationsModel.map((city) => city.name)[0],
+        city: '',
         dateFrom: new Date(), dateTo: new Date(),
         basePrice: 0,
-        destination: { city: destinationsModel.map((city) => city.name)[0], description: '', photos: null },
+        destination: { city: '', description: '', photos: null },
         isFavorite: false,
         pointOffers: [],
         isNewPoint: true,

@@ -37,10 +37,10 @@ export default class Trip {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._newPoint = {
       type: 'taxi',
-      city: 'Chamonix',
+      city: '',
       dateFrom: new Date(), dateTo: new Date(),
       basePrice: 0,
-      destination: { city: 'Chamonix', description: '', photos: null },
+      destination: { city: '', description: '', photos: null },
       pointOffers: [],
       isNewPoint: true,
     };
