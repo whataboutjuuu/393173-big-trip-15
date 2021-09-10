@@ -425,7 +425,8 @@ export default class PointPopup extends SmartView {
     }
 
     let offers = offersModel.find((item) => item.type === point.type).offers;
-    offers = Object.values(offers);
+    offers = offers.map((offer) => ({ ...offer }));
+
     for (const offer of offers) {
       offer['isChecked'] = Object.values(point.pointOffers).some((pointOffer) => pointOffer.title === offer.title);
     }
