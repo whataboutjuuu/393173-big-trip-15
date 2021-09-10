@@ -106,6 +106,20 @@ const createTypesList = () => {
   return typesList;
 };
 
+const createButtonTemplate = (isNewPoint, isDeleting) => {
+  let text;
+
+  if (isNewPoint) {
+    text = 'Cancel';
+  }
+
+  if (!isNewPoint) {
+    isDeleting ? text = 'Deleting...' : text = 'Delete';
+  }
+
+  return `<button class="event__reset-btn" type="reset">${text}</button>`;
+};
+
 const createPointPopupTemplate = (data = {}, destinationsData) => {
   const {
     id,
@@ -113,10 +127,13 @@ const createPointPopupTemplate = (data = {}, destinationsData) => {
     city,
     dateFrom, dateTo,
     basePrice,
-    isCitySelected, isNewPoint, availableOffers,
+    isCitySelected,
+    isNewPoint,
+    availableOffers,
+    isSaving,
+    isDeleting,
   } = data;
   const destinations = destinationsData;
-
   const valueDateFrom = dayjs(dateFrom).format('DD/MM/YYYY HH:mm');
   const valueDateTo = dayjs(dateTo).format('DD/MM/YYYY HH:mm');
   const citiesList = destinations.map((item) => item.name);
@@ -165,8 +182,11 @@ const createPointPopupTemplate = (data = {}, destinationsData) => {
           <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${isNewPoint ? 'Cancel' : 'Delete'}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+
+        ${createButtonTemplate(isNewPoint, isDeleting )}
+
+
         ${!isNewPoint ? '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button >' : ''}
       </header>
       <section class="event__details">
@@ -284,9 +304,13 @@ export default class PointPopup extends SmartView {
 
   _pointPriceInput(evt) {
     evt.preventDefault();
-    this.updateData({
-      basePrice: Number(evt.target.value),
-    }, true);
+    if (evt.target.value > 0) {
+      this.updateData({
+        basePrice: Number(evt.target.value),
+      }, true);
+    } else {
+      throw new Error('Incorrect price!');
+    }
   }
 
   _pointOffersHandler(evt) {
@@ -409,7 +433,13 @@ export default class PointPopup extends SmartView {
     const data = Object.assign(
       {},
       point,
-      { isCitySelected: point.city !== '', checkedOffers: point.pointOffers, availableOffers: offers },
+      {
+        isCitySelected: point.city !== '',
+        checkedOffers: point.pointOffers,
+        availableOffers: offers,
+        isSaving: false,
+        isDeleting: false,
+      },
     );
 
     return data;
@@ -424,6 +454,8 @@ export default class PointPopup extends SmartView {
     delete data.availableOffers;
     delete data.isNewPoint;
     delete data.pointOffers.isChecked;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }

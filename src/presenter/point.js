@@ -9,6 +9,12 @@ const Mode = {
   POPUP: 'POPUP',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 export default class Point {
   constructor(container, changeData, changeMode, offersModel, destinationsModel) {
     this._container = container;
@@ -53,7 +59,9 @@ export default class Point {
     }
 
     if (this._mode === Mode.POPUP) {
-      replace(this._pointPopupComponent, prevPointPopupComponent);
+      //replace(this._pointPopupComponent, prevPointPopupComponent);
+      replace(this._pointComponent, prevPointPopupComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -68,6 +76,36 @@ export default class Point {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToPoint();
+    }
+  }
+
+  setViewState(state) {
+    if (this._mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this._pointPopupComponent.updateData({
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._pointPopupComponent.updateData({
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._pointPopupComponent.updateData({
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._pointPopupComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -118,7 +156,7 @@ export default class Point {
       updateType,
       update,
     );
-    this._replaceFormToPoint();
+    //this._replaceFormToPoint();
   }
 
   _handleFavoriteClick() {
