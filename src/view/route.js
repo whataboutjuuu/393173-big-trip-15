@@ -1,14 +1,13 @@
 import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 
-
 const calculatePrice = (points) => {
   let basePrices = points.map((point) => point.basePrice);
   basePrices = basePrices.reduce((a, b) => a + b);
 
   let offersPrices = points.map((point) => point.pointOffers).flat();
   offersPrices = offersPrices.map((offer) => offer.price);
-  offersPrices = offersPrices.reduce((a, b) => a + b);
+  offersPrices = offersPrices.reduce((a, b) => a + b, 0);
 
   return basePrices + offersPrices;
 };

@@ -81,7 +81,8 @@ export default class Trip {
     return filtredPoints;
   }
 
-  _renderRoute(points) {
+  _renderRoute() {
+    const points = this._pointsModel.getPoints();
     remove(this._routeComponent);
     this._routeComponent = new RouteView(points);
     render(this._header, this._routeComponent, RenderPosition.AFTERBEGIN);
@@ -126,7 +127,7 @@ export default class Trip {
     }
 
     render(this._container, this._pointListComponent, RenderPosition.BEFOREEND);
-    this._renderRoute(points);
+    this._renderRoute();
     this._renderSorting();
 
     points.forEach((point) => this._renderPoint(point));

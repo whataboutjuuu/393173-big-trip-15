@@ -45,5 +45,13 @@ export const isPastDateFinish = (pointDate) => {
   const currentDate = new Date();
   pointDate = new Date(pointDate);
 
-  return pointDate <= currentDate;
+  return pointDate < currentDate;
+};
+
+export const isAllFiltersDate = (pointDateFrom, pointDateTo) => {
+  const currentDate = new Date();
+  pointDateFrom = new Date(pointDateFrom);
+  pointDateTo = new Date(pointDateTo);
+
+  return pointDateFrom < currentDate && pointDateTo > currentDate;
 };

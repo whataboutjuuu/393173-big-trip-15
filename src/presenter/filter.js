@@ -1,6 +1,6 @@
 import FilterView from '../view/filters.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
-
+import { filter } from '../utils/filter.js';
 import { FilterType, UpdateType } from '../utils/constants.js';
 
 export default class Filter {
@@ -22,8 +22,15 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
+    const points = this._pointsModel.getPoints();
+    filters.forEach((el) => {
+      const filtredPoints = filter[el.type](points);
+      filtredPoints.length === 0 ? el.isDisabled = true : el.isDisabled = false;
+    });
+
     this._filterComponent = new FilterView(filters, this._filterModel.getFilter());
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);

@@ -309,7 +309,9 @@ export default class PointPopup extends SmartView {
         basePrice: Number(evt.target.value),
       }, true);
     } else {
-      throw new Error('Incorrect price!');
+      this.updateData({
+        basePrice: 0,
+      }, true);
     }
   }
 
