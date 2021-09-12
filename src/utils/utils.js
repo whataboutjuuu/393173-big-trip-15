@@ -53,6 +53,6 @@ export const isPastDateFinish = (date) => {
   // дата конца поинта без учета времени
   const pointDate = new Date(date).setHours(0, 0, 0, 0);
 
-  return pointDate <= currentDate;
+  return pointDate < currentDate;
 };
 
