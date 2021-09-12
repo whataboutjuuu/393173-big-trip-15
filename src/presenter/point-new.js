@@ -21,6 +21,7 @@ export default class PointNew {
   init(callback, point) {
     this._point = point;
     this._destroyCallback = callback;
+
     if (this._pointPopupComponent !== null) {
       return;
     }
@@ -72,7 +73,6 @@ export default class PointNew {
       UpdateType.MAJOR,
       point,
     );
-    //this.destroy();
   }
 
   _handleDeleteClick() {

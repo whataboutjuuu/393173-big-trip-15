@@ -18,9 +18,10 @@ export default class Trip {
     this._filterModel = filterModel;
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
+    this._api = api;
+
     this._pointPresenter = new Map();
     this._isLoading = true;
-    this._api = api;
     this._filterType = FilterType.EVERYTHING;
     this._currentSortType = SortType.DEFAULT;
 
@@ -29,12 +30,13 @@ export default class Trip {
     this._loadingComponent = new LoadingView();
     this._pointListComponent = new PointListView();
     this._emptyListComponent = null;
+
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._newPoint = {
       type: 'taxi',
       city: '',
@@ -48,16 +50,13 @@ export default class Trip {
   }
 
   init() {
-
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderPage();
-
   }
 
   destroy() {
     this._clearPage({ resetSortType: true });
-
     remove(this._pointListComponent);
   }
 

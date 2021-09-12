@@ -347,7 +347,6 @@ export default class PointPopup extends SmartView {
         enableTime: true,
         'time_24hr': true,
         defaultDate: this._data.dateFrom,
-        maxDate: this._data.dateTo,
         onChange:this._pointDateFromChangeHandler,
       },
     );
@@ -366,7 +365,6 @@ export default class PointPopup extends SmartView {
         enableTime: true,
         'time_24hr': true,
         defaultDate: this._data.dateTo,
-        minDate: this._data.dateFrom,
         onChange: this._pointDateToChangeHandler,
       },
     );
@@ -376,12 +374,14 @@ export default class PointPopup extends SmartView {
     this.updateData({
       dateFrom: userDate,
     }, true);
+    this._datepickerTo.set('minDate', userDate);
   }
 
   _pointDateToChangeHandler([userDate]) {
     this.updateData({
       dateTo: userDate,
     }, true);
+    this._datepickerFrom.set('maxDate', userDate);
   }
 
   restoreHandlers() {

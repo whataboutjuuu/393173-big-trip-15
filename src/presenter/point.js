@@ -3,7 +3,6 @@ import PointPopupView from '../view/point-popup.js';
 import { render, replace, RenderPosition, remove } from '../utils/render.js';
 import { UserAction, UpdateType } from '../utils/constants.js';
 
-
 const Mode = {
   DEFAULT: 'DEFAULT',
   POPUP: 'POPUP',
@@ -22,16 +21,17 @@ export default class Point {
     this._changeMode = changeMode;
     this._offersModel = offersModel;
     this._destinationsModel = destinationsModel;
+
     this._mode = Mode.DEFAULT;
     this._pointComponent = null;
     this._pointPopupComponent = null;
+
     this._handleOpenPopup = this._handleOpenPopup.bind(this);
     this._handleClosePopup = this._handleClosePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
-
   }
 
   init(point) {
@@ -59,7 +59,6 @@ export default class Point {
     }
 
     if (this._mode === Mode.POPUP) {
-      //replace(this._pointPopupComponent, prevPointPopupComponent);
       replace(this._pointComponent, prevPointPopupComponent);
       this._mode = Mode.DEFAULT;
     }
@@ -156,7 +155,6 @@ export default class Point {
       updateType,
       update,
     );
-    //this._replaceFormToPoint();
   }
 
   _handleFavoriteClick() {

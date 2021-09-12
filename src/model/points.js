@@ -15,7 +15,6 @@ export default class Points extends AbstractObserver {
     return this._points;
   }
 
-
   updatePoint (updateType, update) {
     const index = this._points.findIndex((item) => item.id === update.id);
 
@@ -24,7 +23,6 @@ export default class Points extends AbstractObserver {
     }
 
     this._points = [...this._points.slice(0, index), update, ...this._points.slice(index + 1)];
-
     this._notify(updateType, update);
   }
 
