@@ -56,3 +56,4 @@ export const isPastDateFinish = (date) => {
   return pointDate < currentDate;
 };
 
+export const isOnline = () => window.navigator.onLine;
