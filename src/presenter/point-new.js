@@ -21,6 +21,7 @@ export default class PointNew {
   init(callback, point) {
     this._point = point;
     this._destroyCallback = callback;
+
     if (this._pointPopupComponent !== null) {
       return;
     }
@@ -49,13 +50,29 @@ export default class PointNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._pointPopupComponent.updateData({
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._pointPopupComponent.updateData({
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._pointPopupComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
       point,
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {

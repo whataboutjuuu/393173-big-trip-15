@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -35,15 +36,23 @@ export const sortingByDate = (pointA, pointB) => {
   return pointDateA - pointDateB;
 };
 
-export const isFutureDateStart = (pointDate) => {
-  const currentDate = new Date();
-  pointDate = new Date(pointDate);
+export const isFutureDateStart = (date) => {
+  // Future — список запланированных точек маршрута, т.е.точек, у которых дата начала события больше или равна текущей дате;
+  // текущая дата, 00:00
+  const currentDate = new Date().setHours(0, 0, 0, 0);
+  // дата начала поинта
+  const pointDate = new Date(date);
+
   return pointDate >= currentDate;
 };
 
-export const isPastDateFinish = (pointDate) => {
-  const currentDate = new Date();
-  pointDate = new Date(pointDate);
+export const isPastDateFinish = (date) => {
+  //Past — список пройденных точек маршрута, т.е.точек у которых дата окончания маршрута меньше, чем текущая.
+  // текущая дата, 00:00
+  const currentDate = new Date().setHours(0, 0, 0, 0);
+  // дата конца поинта без учета времени
+  const pointDate = new Date(date).setHours(0, 0, 0, 0);
 
-  return pointDate <= currentDate;
+  return pointDate < currentDate;
 };
+

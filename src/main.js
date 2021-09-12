@@ -9,6 +9,7 @@ import OffersModel from './model/offers.js';
 import DestinationsModel from './model/destinations.js';
 import FilterModel from './model/filter.js';
 import StatsisticsView from './view/stats.js';
+import ErrorMessageView from './view/error.js';
 import Api from './api.js';
 
 const AUTHORIZATION = 'Basic IBS7LduqwnZWuYGRo';
@@ -27,6 +28,7 @@ const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 const siteMenuComponent = new MenuView();
 const filterModel = new FilterModel();
+const errorMessage = new ErrorMessageView();
 const addButtonComponent = siteHeadingElement.querySelector('.trip-main__event-add-btn');
 
 const tripPresenter = new TripPresenter(siteMainElement, siteHeadingElement, pointsModel, filterModel, offersModel, destinationsModel, api);
@@ -77,6 +79,7 @@ api.getData().then((data) => {
   render(siteTabsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
 }).catch(() => {
+  render(siteMainElement, errorMessage, RenderPosition.AFTERBEGIN);
   pointsModel.setPoints(UpdateType.INIT, []);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   render(siteTabsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
