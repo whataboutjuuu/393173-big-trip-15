@@ -11,6 +11,7 @@ self.addEventListener('install', (evt) => {
       .then((cashe) => cashe.addAll([
         '/',
         '/index.html',
+        '/bundle.js',
         '/css/style.css',
         '/fonts/Montserrat-Bold.woff2',
         '/fonts/Montserrat-ExtraBold.woff2',
@@ -70,7 +71,6 @@ const handleFetch = (evt) => {
             }
 
             const clonedResponse = response.clone();
-
             caches.open(CACHE_NAME)
               .then((cache) => cache.put(request, clonedResponse));
 

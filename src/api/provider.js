@@ -1,4 +1,4 @@
-import PointModel from '../model/points.js';
+import PointsModel from '../model/points.js';
 import { isOnline } from '../utils/utils.js';
 
 
@@ -19,20 +19,23 @@ export default class Provider {
     this._storePoints = storePoints;
     this._storeOffers = storeOffers;
     this._storeDestinations = storeDestinations;
+
   }
 
   getPoints() {
     if (isOnline()) {
       return this._api.getPoints()
         .then((points) => {
-          const items = createStoreStructure(points.map(PointModel.adaptToServer));
+          console.log(points);
+          const items = createStoreStructure(points.map(PointsModel.adaptToServer));
+          console.log(items);
           this._storePoints.setItems(items);
           return points;
         });
     }
 
     const storePoints = Object.values(this._storePoints.getItems());
-    return Promise.resolve(storePoints.map(PointModel.adaptToClient));
+    return Promise.resolve(storePoints.map(PointsModel.adaptToClient));
   }
 
   getDestinations() {
@@ -65,12 +68,12 @@ export default class Provider {
     if (isOnline()) {
       return this._api.updatePoint(point)
         .then((updatedPoint) => {
-          this._storePoints.setItem(updatedPoint.id, PointModel.adaptToServer(updatedPoint));
+          this._storePoints.setItem(updatedPoint.id, PointsModel.adaptToServer(updatedPoint));
           return updatedPoint;
         });
     }
 
-    this._storePoints.setItem(point.id, PointModel.adaptToServer(Object.assign({}, point)));
+    this._storePoints.setItem(point.id, PointsModel.adaptToServer(Object.assign({}, point)));
 
     return Promise.resolve(point);
   }
@@ -79,7 +82,7 @@ export default class Provider {
     if (isOnline()) {
       return this._api.addPoint(point)
         .then((newPoint) => {
-          this._storePoints.setItem(newPoint.id, PointModel.adaptToServer(newPoint));
+          this._storePoints.setItem(newPoint.id, PointsModel.adaptToServer(newPoint));
           return newPoint;
         });
     }
@@ -99,7 +102,6 @@ export default class Provider {
   sync() {
     if (isOnline()) {
       const storePoints = Object.values(this._storePoints.getItems());
-
       return this._api.sync(storePoints)
         .then((response) => {
           const createdPoints = getSyncedPoints(response.created);

@@ -21,7 +21,10 @@ export default class Api {
   getPoints() {
     return this._load({ url: 'points' })
       .then(Api.toJSON)
-      .then((points)=>points.map(PointsModel.adaptToClient));
+      .then((points) => {
+        console.log(points);
+        points.map(PointsModel.adaptToClient);
+      });
   }
 
   getDestinations() {

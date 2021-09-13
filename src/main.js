@@ -17,7 +17,7 @@ import Provider from './api/provider.js';
 import { toast } from './utils/toast.js';
 
 const AUTHORIZATION = 'Basic IBS7LduqwnZWuYGRo';
-const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
+const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
 
 const STORE_VER = 'v15';
 const StoreNames = {
@@ -89,6 +89,7 @@ filterPresenter.init();
 tripPresenter.init();
 
 apiWithProvider.getData().then((data) => {
+  console.log(data);
   const [points, offers, destinations] = data;
   offersModel.setOffers(offers);
   destinationsModel.setDestinations(destinations);
