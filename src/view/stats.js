@@ -2,13 +2,16 @@
 import SmartView from './smart.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { getTypesList, sumMoneyByType, getTypesQuantity, getDurationByType } from '../utils/statistics.js';
+import { getTypesList, sumMoneyByType, getTypesQuantity, getDurationByType, sortStatsDescending } from '../utils/statistics.js';
 import { getFormattedTimeDifference } from '../utils/utils.js';
 
 const renderMoneyChart = (chartCtx, points) => {
   let labels = getTypesList(points);
   labels = labels.map((label) => label.charAt(0).toUpperCase() + label.slice(1));
-  const prices = sumMoneyByType(points);
+  let prices = sumMoneyByType(points);
+  const sortedMoneyData = sortStatsDescending(labels, prices);
+  prices = sortedMoneyData.map((price) => price[0]);
+  labels = sortedMoneyData.map((label) => label[1]);
 
   return new Chart(chartCtx, {
     plugins: [ChartDataLabels],
@@ -79,7 +82,11 @@ const renderMoneyChart = (chartCtx, points) => {
 const renderTypeChart = (chartCtx, points) => {
   let labels = getTypesList(points);
   labels = labels.map((label) => label.charAt(0).toUpperCase() + label.slice(1));
-  const typesQuanity = getTypesQuantity(points);
+  let typesQuanity = getTypesQuantity(points);
+
+  const sortedTypeData = sortStatsDescending(labels, typesQuanity);
+  typesQuanity = sortedTypeData.map((type) => type[0]);
+  labels = sortedTypeData.map((label) => label[1]);
 
   return new Chart(chartCtx, {
     plugins: [ChartDataLabels],
@@ -150,7 +157,11 @@ const renderTypeChart = (chartCtx, points) => {
 const renderTimeChart = (chartCtx, points) => {
   let labels = getTypesList(points);
   labels = labels.map((label) => label.charAt(0).toUpperCase() + label.slice(1));
-  const durations = getDurationByType(points);
+  let durations = getDurationByType(points);
+
+  const sortedTypeData = sortStatsDescending(labels, durations);
+  durations = sortedTypeData.map((duration) => duration[0]);
+  labels = sortedTypeData.map((label) => label[1]);
 
   return new Chart(chartCtx, {
     plugins: [ChartDataLabels],

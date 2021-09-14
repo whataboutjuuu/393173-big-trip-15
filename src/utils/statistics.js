@@ -48,3 +48,17 @@ export const getDurationByType = (data) => {
   return result;
 };
 
+export const sortStatsDescending = (labels, values) => {
+  const result = [];
+  const labelsAndValus = {};
+
+  values.forEach((key, i) => labelsAndValus[key] = labels[i]);
+  const sorted = Object.keys(labelsAndValus).map((value) => Number(value));
+  sorted.sort((a, b) => b - a);
+
+  sorted.forEach((value) => {
+    result.push([value, labelsAndValus[value]]);
+  });
+
+  return result;
+};
