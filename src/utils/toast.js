@@ -11,19 +11,15 @@ const toast = (message) => {
   toastItem.textContent = message;
   toastItem.classList.add('toast-item');
   toastContainer.append(toastItem);
-
-
-  // toastContainer.style.position = 'fixed';
-  // toastContainer.style.left = '50%';
-  // toastContainer.style.top = '50%';
-  // toastContainer.style.transform = 'translate(-50%, -50%)';
-  // toastContainer.style.backgroundColor = '#248DEB';
-  // toastContainer.style.color = 'white';
-  // toastContainer.style.fontSize = '20px';
-  // toastContainer.style.fontWeight = '600';
-  // toastContainer.style.padding = '30px 50px';
-  // toastContainer.style.borderRadius = '15px';
-
+  toastContainer.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #961515;
+    padding: 20px;
+    border-radius: 4px;
+    color: #fff;
+  `;
   setTimeout(() => {
     toastItem.remove();
     toastContainer.remove();

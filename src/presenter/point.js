@@ -131,10 +131,6 @@ export default class Point {
   }
 
   _handleOpenPopup() {
-    if (!isOnline()) {
-      toast('You can\'t edit point offline');
-      return;
-    }
     this._replacePointToForm();
     document.addEventListener('keydown', this._onEscKeyDown);
   }
@@ -168,6 +164,10 @@ export default class Point {
   }
 
   _handleFavoriteClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit point offline');
+      return;
+    }
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.PATCH,

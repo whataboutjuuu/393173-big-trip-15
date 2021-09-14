@@ -4,18 +4,29 @@ export default class Store {
     this._storeKey = key;
   }
 
-  getItems() {
+  getItems(key) {
+    if (!key) {
+      try {
+        return JSON.parse(this._storage.getItem(this._storeKey)) || {};
+      } catch (err) {
+        return {};
+      }
+    }
+
     try {
-      return JSON.parse(this._storage.getItems(this._storeKey)) || {};
+      const store = JSON.parse(this._storage.getItem(this._storeKey)) || {};
+      return store[key] ? store[key] : {};
     } catch (err) {
       return {};
     }
   }
 
-  setItems(items) {
+  setItems(items, key) {
+    const prevStorage = this.getItems();
+
     this._storage.setItem(
       this._storeKey,
-      JSON.stringify(items),
+      JSON.stringify({ ...prevStorage, [key]: items }),
     );
   }
 
@@ -24,11 +35,7 @@ export default class Store {
 
     this._storage.setItem(
       this._storeKey,
-      JSON.stringify(
-        Object.assign({}, store, {
-          [key]: value,
-        }),
-      ),
+      JSON.stringify({...store, [key]: value}),
     );
   }
 

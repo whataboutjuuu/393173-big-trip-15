@@ -21,10 +21,7 @@ export default class Api {
   getPoints() {
     return this._load({ url: 'points' })
       .then(Api.toJSON)
-      .then((points) => {
-        console.log(points);
-        points.map(PointsModel.adaptToClient);
-      });
+      .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   getDestinations() {
@@ -35,10 +32,6 @@ export default class Api {
   getOffers() {
     return this._load({ url: 'offers' })
       .then(Api.toJSON);
-  }
-
-  getData() {
-    return Promise.all([this.getPoints(), this.getOffers(), this.getDestinations()]);
   }
 
   updatePoint(point) {

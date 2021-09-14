@@ -20,29 +20,23 @@ const AUTHORIZATION = 'Basic IBS7LduqwnZWuYGRo';
 const END_POINT = 'https://13.ecmascript.pages.academy/big-trip';
 
 const STORE_VER = 'v15';
-const StoreNames = {
-  POINTS: `big-trip-points-localstorage-${STORE_VER}`,
-  OFFERS: `big-trip-offers-localstorage-${STORE_VER}`,
-  DESTINATIONS: `big-trip-destinations-localstorage-${STORE_VER}`,
-};
+const STORE_PREFIX = 'big-trip-localstorage';
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const siteMainElement = document.querySelector('.trip-events');
 const siteHeadingElement = document.querySelector('.trip-main');
 const siteTabsNavigationElement = siteHeadingElement.querySelector('.trip-controls__navigation');
 const siteFiltersElement = siteHeadingElement.querySelector('.trip-controls__filters');
 
-const storePoints = new Store(StoreNames.POINTS, window.localStorage);
-const storeOffers = new Store(StoreNames.OFFERS, window.localStorage);
-const storeDestinations = new Store(StoreNames.DESTINATIONS, window.localStorage);
+const store = new Store(STORE_NAME, window.localStorage);
 const api = new Api(END_POINT, AUTHORIZATION);
-const apiWithProvider = new Provider(api, storePoints, storeOffers, storeDestinations);
+const apiWithProvider = new Provider(api, store);
 
 const pointsModel = new PointsModel();
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 const siteMenuComponent = new MenuView();
 const filterModel = new FilterModel();
-const errorMessage = new ErrorMessageView();
 const addButtonComponent = siteHeadingElement.querySelector('.trip-main__event-add-btn');
 
 const tripPresenter = new TripPresenter(siteMainElement, siteHeadingElement, pointsModel, filterModel, offersModel, destinationsModel, apiWithProvider);
@@ -88,18 +82,21 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 tripPresenter.init();
 
-apiWithProvider.getData().then((data) => {
-  console.log(data);
-  const [points, offers, destinations] = data;
+Promise.all([
+  apiWithProvider.getPoints(),
+  apiWithProvider.getOffers(),
+  apiWithProvider.getDestinations(),
+]).then(([points, offers, destinations]) => {
   offersModel.setOffers(offers);
   destinationsModel.setDestinations(destinations);
   pointsModel.setPoints(UpdateType.INIT, points);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   render(siteTabsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
-
 }).catch(() => {
-  render(siteMainElement, errorMessage, RenderPosition.AFTERBEGIN);
   pointsModel.setPoints(UpdateType.INIT, []);
+
+  const errorMessage = new ErrorMessageView('Data is not loaded!');
+  render(siteMainElement, errorMessage, RenderPosition.AFTERBEGIN);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   render(siteTabsNavigationElement, siteMenuComponent, RenderPosition.BEFOREEND);
 });
@@ -108,12 +105,16 @@ window.addEventListener('load', () => {
   navigator.serviceWorker.register('/sw.js');
 });
 
-
+const messageOffline = new ErrorMessageView('We\'re offline now!');
 window.addEventListener('online', () => {
   document.title = document.title.replace(' [offline]', '');
+  if (messageOffline) {
+    remove(messageOffline);
+  }
   apiWithProvider.sync();
 });
 
 window.addEventListener('offline', () => {
   document.title += ' [offline]';
+  render(siteMainElement, messageOffline, RenderPosition.AFTERBEGIN);
 });
