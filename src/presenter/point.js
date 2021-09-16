@@ -2,6 +2,8 @@ import PointView from '../view/point.js';
 import PointPopupView from '../view/point-popup.js';
 import { render, replace, RenderPosition, remove } from '../utils/render.js';
 import { UserAction, UpdateType } from '../utils/constants.js';
+import { isOnline } from '../utils/utils.js';
+import { toast } from '../utils/toast.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -139,6 +141,10 @@ export default class Point {
   }
 
   _handleFormSubmit(update) {
+    if (!isOnline()) {
+      toast('You can\'t save point offline');
+      return;
+    }
     const currentDate = new Date();
     const isMajorUpdate = this._point.city === update.city || this._point.basePrice === update.basePrice;
     const isMinorUpdate = currentDate < update.dateFrom;
@@ -166,7 +172,10 @@ export default class Point {
   }
 
   _handleDeleteClick(point) {
-
+    if (!isOnline()) {
+      toast('You can\'t delete point offline');
+      return;
+    }
     this._changeData(
       UserAction.DELETE_POINT,
       UpdateType.MAJOR,

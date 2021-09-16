@@ -1,4 +1,4 @@
-import PointsModel from './model/points';
+import PointsModel from '../model/points.js';
 
 const Method = {
   GET: 'GET',
@@ -21,7 +21,7 @@ export default class Api {
   getPoints() {
     return this._load({ url: 'points' })
       .then(Api.toJSON)
-      .then((points)=>points.map(PointsModel.adaptToClient));
+      .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   getDestinations() {
@@ -32,10 +32,6 @@ export default class Api {
   getOffers() {
     return this._load({ url: 'offers' })
       .then(Api.toJSON);
-  }
-
-  getData() {
-    return Promise.all([this.getPoints(), this.getOffers(), this.getDestinations()]);
   }
 
   updatePoint(point) {
@@ -65,6 +61,16 @@ export default class Api {
       url: `points/${point.id}`,
       method: Method.DELETE,
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: 'points/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    })
+      .then(Api.toJSON);
   }
 
   _load({
