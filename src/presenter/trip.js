@@ -81,7 +81,7 @@ export default class Trip {
   }
 
   _renderRoute() {
-    const points = this._pointsModel.getPoints();
+    const points = this._pointsModel.getPoints().sort(sortingByDate);
     remove(this._routeComponent);
     this._routeComponent = new RouteView(points);
     render(this._header, this._routeComponent, RenderPosition.AFTERBEGIN);

@@ -164,10 +164,6 @@ export default class Point {
   }
 
   _handleFavoriteClick() {
-    if (!isOnline()) {
-      toast('You can\'t edit point offline');
-      return;
-    }
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.PATCH,

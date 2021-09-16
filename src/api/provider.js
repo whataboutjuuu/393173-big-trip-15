@@ -55,10 +55,6 @@ export default class Provider {
     return Promise.resolve(storeOffers);
   }
 
-  getData() {
-    return Promise.all([this.getPoints(), this.getOffers(), this.getDestinations()]);
-  }
-
   updatePoint(point) {
     const storePoints = this._store.getItems('points');
     storePoints[point.id] = PointsModel.adaptToServer(point);
