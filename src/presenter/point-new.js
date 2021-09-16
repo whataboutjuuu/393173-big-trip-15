@@ -1,6 +1,7 @@
 import PointPopup from '../view/point-popup';
 import { remove, render, RenderPosition } from '../utils/render.js';
-import { UserAction, UpdateType } from '../utils/constants';
+import { UserAction, UpdateType } from '../utils/constants.js';
+import { isEscPressed } from '../utils/utils.js';
 
 export default class PointNew {
   constructor(container, changeData, point, offersModel, destinationsModel) {
@@ -80,7 +81,7 @@ export default class PointNew {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscPressed(evt)) {
       evt.preventDefault();
       this.destroy();
     }

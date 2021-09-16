@@ -9,7 +9,7 @@ import PointsModel from './model/points.js';
 import OffersModel from './model/offers.js';
 import DestinationsModel from './model/destinations.js';
 import FilterModel from './model/filter.js';
-import StatsisticsView from './view/stats.js';
+import StatisticsView from './view/stats.js';
 import ErrorMessageView from './view/error.js';
 import Api from './api/api.js';
 import Store from './api/store.js';
@@ -70,7 +70,7 @@ const handleSiteMenuClick = (menuItem) => {
       break;
     case MenuItem.STATS:
       tripPresenter.destroy();
-      statisticsComponent = new StatsisticsView(pointsModel.getPoints());
+      statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
       addButtonComponent.disabled = true;
       siteFiltersElement.style.pointerEvents= 'none';

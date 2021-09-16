@@ -2,7 +2,7 @@ import PointView from '../view/point.js';
 import PointPopupView from '../view/point-popup.js';
 import { render, replace, RenderPosition, remove } from '../utils/render.js';
 import { UserAction, UpdateType } from '../utils/constants.js';
-import { isOnline } from '../utils/utils.js';
+import { isEscPressed, isOnline } from '../utils/utils.js';
 import { toast } from '../utils/toast.js';
 
 const Mode = {
@@ -122,7 +122,7 @@ export default class Point {
   }
 
   _onEscKeyDown(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscPressed(evt)) {
       evt.preventDefault();
       this._pointPopupComponent.reset(this._point);
       this._replaceFormToPoint();
